@@ -1,6 +1,7 @@
 import { ServiceConfig } from "../iconfig";
 
 export const frontend: ServiceConfig = {
+  projectFolderName: "frontend",
   hostname: process.env.FRONTEND_HOSTNAME || "client",
   cloudfront: {
     hostname: process.env.FRONTEND_CLOUDFRONT_HOSTNAME || "explorer",
@@ -23,11 +24,8 @@ export const frontend: ServiceConfig = {
     },
   },
   ecr: {
-    repositoryName: process.env.FRONTEND_REPOSITORY!,
+    repositoryName: process.env.FRONTEND_ECR_REPOSITORY!,
     tag: "latest",
-  },
-  git: {
-    repository: process.env.FRONTEND_REPOSITORY!,
   },
   env: {
     APP_NAME: process.env.FRONTEND_APP_NAME || "Nightfall Explorer",

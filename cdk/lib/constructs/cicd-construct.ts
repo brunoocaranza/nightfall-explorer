@@ -18,6 +18,7 @@ export interface CiCdConstructProps {
   gitBranch: string;
   gitTokenSecretPath: string;
   baseRepo: IRepository;
+  gitRepository: string;
 }
 
 export class CiCdConstruct extends Construct {
@@ -32,18 +33,19 @@ export class CiCdConstruct extends Construct {
       gitOwner,
       gitBranch,
       gitTokenSecretPath,
+      gitRepository,
     } = props;
     // add pipeline
 
     const gitHubSource = codebuild.Source.gitHub({
       owner: gitOwner,
-      repo: service.git.repository,
-      webhook: true, // optional, default: true if `webhookFilteres` were provided, false otherwise
-      webhookFilters: [
-        codebuild.FilterGroup.inEventOf(codebuild.EventAction.PUSH).andBranchIs(
-          `${gitBranch}`
-        ),
-      ], // optional, by default all pushes and Pull Requests will trigger a build
+      repo: gitRepository,
+      // webhook: true, // optional, default: true if `webhookFilteres` were provided, false otherwise
+      // webhookFilters: [
+      //   codebuild.FilterGroup.inEventOf(codebuild.EventAction.PUSH).andBranchIs(
+      //     `${gitBranch}`
+      //   ),
+      // ], // optional, by default all pushes and Pull Requests will trigger a build
     });
 
     // CODEBUILD - project
@@ -77,6 +79,7 @@ export class CiCdConstruct extends Construct {
           },
           build: {
             commands: [
+              `cd ${service.projectFolderName}`,
               "docker pull $BASE_REPO_URI:node-alpine",
               "docker pull $BASE_REPO_URI:nginx-alpine",
               "docker tag $BASE_REPO_URI:node-alpine node:16.17.0-alpine",
@@ -105,17 +108,13 @@ export class CiCdConstruct extends Construct {
 
     // ***PIPELINE ACTIONS***
 
-    const sourceOutput = new codepipeline.Artifact(
-      `explorer-${service.hostname}-${envName}-source`
-    );
-    const buildOutput = new codepipeline.Artifact(
-      `explorer-${service.hostname}-${envName}-build`
-    );
+    const sourceOutput = new codepipeline.Artifact();
+    const buildOutput = new codepipeline.Artifact();
 
     const sourceAction = new codepipeline_actions.GitHubSourceAction({
       actionName: "GitHub_Source",
       owner: gitOwner,
-      repo: service.git.repository,
+      repo: gitRepository,
       branch: gitBranch,
       oauthToken: cdk.SecretValue.secretsManager(gitTokenSecretPath),
       output: sourceOutput,

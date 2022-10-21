@@ -85,6 +85,7 @@ export class ECSServiceGroup extends Construct {
       gitOwner: explorer.git.owner,
       gitBranch: explorer.git.branch,
       gitTokenSecretPath: explorer.git.token,
+      gitRepository: explorer.git.repository,
     });
 
     const { cloudfront } = serviceConfig;

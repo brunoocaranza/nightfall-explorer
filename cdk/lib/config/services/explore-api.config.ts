@@ -1,6 +1,7 @@
 import { ServiceConfig } from "../iconfig";
 
 export const explorerApi: ServiceConfig = {
+  projectFolderName: "backend",
   hostname: process.env.API_HOSTNAME || "api",
   port: process.env.API_TARGET_PORT ? +process.env.API_TARGET_PORT : 80,
   logGroup: process.env.API_LOG_GROUP || "log-api",
@@ -31,11 +32,8 @@ export const explorerApi: ServiceConfig = {
     },
   },
   ecr: {
-    repositoryName: process.env.API_REPOSITORY!,
+    repositoryName: process.env.API_ECR_REPOSITORY!,
     tag: "latest",
-  },
-  git: {
-    repository: process.env.API_REPOSITORY!,
   },
   env: {
     NODE_ENV: process.env.ENV_NAME || "dev",
@@ -50,7 +48,7 @@ export const explorerApi: ServiceConfig = {
     ORIGIN_NAME: process.env.ORIGIN_NAME || "http://localhost",
     CLOUDWATCH_GROUP_NAME: `${process.env.API_LOG_GROUP}-${process.env.ENV_NAME}`,
     THROTTLE_TTL: "60",
-    THROTTLE_LIMIT: "30",
+    THROTTLE_LIMIT: "500",
     NIGHTFALL_OPTIMIST_URL: process.env.NIGHTFALL_OPTIMIST_URL,
     NIGHTFALL_DASHBOARD_URL: process.env.NIGHTFALL_DASHBOARD_URL,
     EXPLORER_SYNC_URL: `https://${process.env.SYNC_HOSTNAME}.${process.env.DNS_ZONE_NAME}`,

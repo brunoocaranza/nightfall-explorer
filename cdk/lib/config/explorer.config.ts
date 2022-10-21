@@ -11,6 +11,7 @@ export const explorer: ExplorerConfig = {
     owner: process.env.GIT_OWNER!,
     branch: process.env.GIT_BRANCH!,
     token: process.env.GIT_TOKEN!,
+    repository: process.env.GIT_REPOSITORY!,
   },
 };
 
