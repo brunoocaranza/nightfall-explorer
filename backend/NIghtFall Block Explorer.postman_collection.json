@@ -1,0 +1,430 @@
+{
+	"info": {
+		"_postman_id": "507aa9ed-43f4-4c6b-86ce-8d8dd85c27de",
+		"name": "NightFall Block Explorer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3341813"
+	},
+	"item": [
+		{
+			"name": "Service Health",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "origin",
+						"value": "http://localhost",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/health/service",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"health",
+						"service"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Block By L2 Number",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/block/59",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"block",
+						"59"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction By Hash",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/transaction/0x12c9a4b92a9b0957b2f54a81163a626a0f8ffbe74852f06242911bf1c87207b7",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"transaction",
+						"0x12c9a4b92a9b0957b2f54a81163a626a0f8ffbe74852f06242911bf1c87207b7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/search?q=0xBBB0ed659d7821b59bBFd1b6B79260051e5E9222",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "0xBBB0ed659d7821b59bBFd1b6B79260051e5E9222"
+						},
+						{
+							"key": "badBlocks",
+							"value": "true",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Block Count",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/block/stats/count",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"block",
+						"stats",
+						"count"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Average Block Creation",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/block/stats/avg-creation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"block",
+						"stats",
+						"avg-creation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Blocks Paginated",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/block?limit=10&page=1&sortDirection=desc&sortColumn=blockNumberL2&proposer=0xCaE0ed659d7821b59bBFd1b6B79260051e5E9111&badBlocks=true",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"block"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "sortDirection",
+							"value": "desc"
+						},
+						{
+							"key": "sortColumn",
+							"value": "blockNumberL2"
+						},
+						{
+							"key": "proposer",
+							"value": "0xCaE0ed659d7821b59bBFd1b6B79260051e5E9111"
+						},
+						{
+							"key": "badBlocks",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Challenged Block By L2 Number",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/block/3/challenged",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"block",
+						"3",
+						"challenged"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Proposer's mempool",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://proposer.testnet.polygon-nightfall.technology/mempool",
+					"protocol": "https",
+					"host": [
+						"proposer",
+						"testnet",
+						"polygon-nightfall",
+						"technology"
+					],
+					"path": [
+						"mempool"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pending Tx",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/transaction/stats/pending/count",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"transaction",
+						"stats",
+						"pending",
+						"count"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Proposer info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/proposer/0xCaE0ed659d7821b59bBFd1b6B79260051e5E9111",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"proposer",
+						"0xCaE0ed659d7821b59bBFd1b6B79260051e5E9111"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Challenged Stats",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/block/challenged/stats",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"block",
+						"challenged",
+						"stats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Proposers Paginated",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/proposer?limit=1&page=2&sortDirection=asc&sortColumn=goodBlocks",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"proposer"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "1"
+						},
+						{
+							"key": "page",
+							"value": "2"
+						},
+						{
+							"key": "sortDirection",
+							"value": "asc"
+						},
+						{
+							"key": "sortColumn",
+							"value": "goodBlocks"
+						},
+						{
+							"key": "address",
+							"value": "0xBBB0ed659d7821b59bBFd1b6B79260051e5E9222",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Proposer Addresses",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/proposer/addresses/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"proposer",
+						"addresses",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Network health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/health/network",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"health",
+						"network"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Contract Addresses",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/contracts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"contracts"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

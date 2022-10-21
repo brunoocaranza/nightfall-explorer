@@ -1,0 +1,19 @@
+{
+  "name": "explorer-migration",
+  "version": "1.0.0",
+  "description": "Migration service for creating test data",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/main.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "dotenv": "^16.0.3",
+    "mongodb": "^4.10.0"
+  }
+}

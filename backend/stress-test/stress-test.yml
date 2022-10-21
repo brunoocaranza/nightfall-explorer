@@ -1,0 +1,94 @@
+config:
+  target: "https://explorer-api.testnet.polygon-nightfall.technology/api/v1"
+  phases:
+    - duration: 10
+      arrivalRate: 1000 # usually it will be 2 or 3 request per user
+      name: Warm up # 5 virtual users every second for 60 seconds
+    # - duration: 120
+    #   arrivalRate: 5 
+    #   rampTo: 50 # Max of virtual users
+    #   name: Ramp up load # Over time number of virtual users will increase to 50
+    # - duration: 600
+    #   arrivalRate: 50
+    #   name: Stress test
+  processor: ./processor.js
+
+scenarios:
+  - name: "Health check"
+    flow:
+      - get: # Backend service health check
+          afterResponse: printStatus
+          url: "/health/service"
+      - get: # Network health check
+          afterResponse: printStatus
+          url: "/health/network"
+          
+  - name: "Network stats"
+    flow: 
+      - get: # Blocks count
+          afterResponse: printStatus
+          url: "/block/stats/count"
+      - get: # Tx count
+          afterResponse: printStatus
+          url: "/transaction/stats/count"
+      - get: # Pending Tx count
+          afterResponse: printStatus
+          url: "/transaction/stats/pending/count"
+      - get: # Average block time creation
+          afterResponse: printStatus
+          url: "/block/stats/avg-creation"
+  
+  - name: "Contracts"
+    flow:
+      - get: # Contract addressess
+          afterResponse: printStatus
+          url: "/contracts"
+
+  - name: "Search"
+    flow: 
+      - get: # Search with random values
+          beforeRequest: generateSearchValue
+          afterResponse: printStatus
+          url: "/search?q={{ q }}"
+
+  - name: "Block"
+    flow: 
+      - get: # Search block by block number
+          beforeRequest: generateBlockNumber
+          afterResponse: printStatus
+          url: "/block/{{ blockNumber }}"
+      - get: # Paginated blocks
+          beforeRequest: generateBlockPagination
+          afterResponse: printStatus
+          url: "/block?limit={{ limit }}&page={{ page }}&sortDirection={{ sortDirection }}&sortColumn={{ sortColumn }}"
+      - get: # Paginated blocks for proposer
+          beforeRequest: generateBlockPaginationProposer
+          afterResponse: printStatus
+          url: "/block?limit={{ limit }}&page={{ page }}&sortDirection={{ sortDirection }}&sortColumn={{ sortColumn }}&proposer={{ proposer }}&badBlocks=0"
+
+  - name: "Transaction"
+    flow: 
+      - get: # Search tx by hash
+          beforeRequest: generateTxHash
+          afterResponse: printStatus
+          url: "/transaction/{{ txHash }}"
+
+  - name: "Challenged block"
+    flow:
+      - get: # Challenged block stats
+          afterResponse: printStatus
+          url: "/block/challenged/stats"
+
+  - name: "Proposer"
+    flow:
+      - get: # Get proposer info
+          beforeRequest: generateProposerAddress
+          afterResponse: printStatus
+          url: "/proposer/{{ address }}"
+      - get: # Proposers paginated
+          beforeRequest: generateProposerPagination
+          afterResponse: printStatus
+          url: "/proposer?limit={{ limit }}&page={{ page }}&sortDirection={{ sortDirection }}&sortColumn={{ sortColumn }}"
+
+
+
