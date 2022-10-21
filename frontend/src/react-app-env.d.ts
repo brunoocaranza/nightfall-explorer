@@ -1,0 +1,26 @@
+interface IENV {
+    APP_URL: string;
+    API_URL: string;
+    NET_URLS: string;
+    SENTRY_DSN: string;
+    L1_EXPLORER_URL: string;
+}
+
+declare global {
+    interface Window {
+        _env: IENV;
+    }
+}
+
+declare module "*.svg" {
+    import React = require("react");
+    const src: React.FC<React.SVGProps<SVGSVGElement>> | string | unefined;
+
+    export default src;
+}
+declare module "*.png" {
+    export default "" as string;
+}
+declare module "*.jpg" {
+    export default "" as string;
+}

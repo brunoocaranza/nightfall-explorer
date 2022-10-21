@@ -1,0 +1,36 @@
+.table-transactions {
+  @apply w-full;
+
+  thead {
+    th {
+      @apply text-left font-normal text-sm p-5 text-gray-400 hidden md:table-cell;
+
+      &:first-child {
+        @apply text-left;
+      }
+
+      &:last-child {
+        @apply text-right;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      @apply odd:bg-gray-25 even:bg-white hover:bg-slate-100 py-3 transition-colors relative truncate grid w-full md:table-row;
+    }
+
+    td {
+      @apply text-left px-3 md:p-5 w-full  truncate md:table-cell;
+    }
+  }
+}
+
+.tag-transaction-type {
+  @apply flex items-center capitalize text-white bg-gray-400 rounded-lg py-1 px-2 text-xs justify-center shadow-[0_1px_2px_-1px_rgba(17,12,34,0.08)];
+
+
+  svg {
+    @apply mr-1;
+  }
+}

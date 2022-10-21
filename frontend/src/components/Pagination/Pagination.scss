@@ -1,0 +1,44 @@
+.pagination {
+  .page-item {
+    @apply mx-1 hidden w-full md:w-auto md:block text-gray-600;
+
+    a {
+      @apply flex justify-center items-center w-full rounded-xl md:w-10 h-10 hover:bg-purple-50 hover:text-purple-500 transition-colors;
+    }
+
+    &.active {
+      @apply flex bg-primary-50 text-primary-400 rounded-xl;
+    }
+
+    &.disabled > a {
+      @apply cursor-not-allowed;
+    }
+
+    &--prev {
+      svg {
+        @apply mr-2 md:m-0;
+      }
+    }
+
+    &--next {
+      svg {
+        @apply ml-2 md:m-0;
+      }
+    }
+
+    &--next, &--prev {
+      @apply flex border border-gray-200 rounded-xl shadow-[0_1px_2px_-1px_rgba(17,12,34,0.08)];
+      &-content {
+        @apply table w-full;
+
+        svg {
+          @apply inline align-baseline;
+        }
+
+        span {
+          @apply inline md:hidden;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+.table-cb-proposers {
+  table {
+    tbody {
+      td {
+        &:nth-child(2) {
+          @apply font-bold;
+        }
+      }
+    }
+
+    thead, tbody {
+      th, tr, td {
+        &:first-child {
+          @apply cursor-auto font-bold w-full pt-1 md:pt-5 md:w-1/6;
+        }
+
+        &:nth-child(2) {
+          @apply truncate w-full md:w-3/6;
+        }
+
+
+        &:nth-child(3),
+        &:nth-child(4) {
+          @apply font-normal w-full md:w-1/6 md:text-center;
+        }
+
+        &:nth-child(5) {
+          @apply cursor-auto w-full font-normal text-left md:text-center md:w-1/6;
+        }
+      }
+    }
+  }
+}

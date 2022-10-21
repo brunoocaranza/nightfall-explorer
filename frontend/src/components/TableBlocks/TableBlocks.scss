@@ -1,0 +1,52 @@
+.table-blocks {
+  thead {
+    th {
+      &:first-child {
+        width: 14%;
+        @apply cursor-pointer;
+      }
+
+      &:nth-child(2),
+      &:nth-child(3) {
+        width: 30%;
+      }
+
+      &:nth-child(4), &:nth-child(5) {
+        @apply text-center;
+      }
+
+      &:last-child {
+        @apply cursor-pointer text-right;
+      }
+    }
+  }
+
+  tbody {
+    td {
+      &:first-child {
+        @apply text-lg font-bold pt-5 mb-2 md:pt-5 md:mb-0;
+      }
+
+      &:nth-child(2),
+      &:nth-child(3) {
+        @apply font-bold;
+      }
+
+      &:nth-child(4) {
+        @apply pb-5 md:pb-5;
+      }
+
+      &:nth-child(5) {
+        @apply absolute w-6/12 right-0 text-right pt-5 text-xs leading-6 top-0 md:relative md:text-base md:leading-normal;
+      }
+
+      &:nth-child(4), &:nth-child(5) {
+        @apply md:text-center;
+      }
+
+      &:last-child {
+        @apply text-right;
+      }
+    }
+  }
+}

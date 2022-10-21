@@ -1,0 +1,32 @@
+// Tailwind
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Base
+@import "fonts";
+@import "forms";
+@import "table";
+
+// Plugins
+@import "react-select";
+
+html {
+  @apply text-gray-700;
+}
+
+a {
+  @apply transition-colors;
+}
+
+footer {
+  a {
+    @apply text-gray-600 font-bold border-b-3 border-b-transparent hover:text-primary-400 hover:border-b-primary-100;
+
+    &:hover {
+      path {
+        @apply stroke-primary-400;
+      }
+    }
+  }
+}

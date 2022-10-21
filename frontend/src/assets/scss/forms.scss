@@ -1,0 +1,47 @@
+// Inputs
+input {
+  @apply bg-white rounded-xl border-0 placeholder:font-light border border-gray-100 shadow-[0_5px_16px_rgba(44,23,82,0.12)];
+}
+
+// Buttons
+button, .btn {
+  @apply rounded-xl px-4 py-3 flex items-center shadow-[0_1px_2px_-1px_rgba(17,12,34,0.08)];
+
+  &:hover {
+    @apply bg-primary-400;
+  }
+}
+
+.btn-group {
+  @apply flex gap-4;
+}
+
+
+.btn-light {
+  @apply bg-primary-50 text-primary-400 border border-primary-100 gap-3;
+
+  path {
+    @apply stroke-primary-400;
+  }
+
+  &:hover {
+    @apply bg-gray-75;
+  }
+}
+.btn-white {
+  @apply bg-white border border-gray-200 gap-3;
+
+  &:hover {
+    @apply bg-gray-50;
+  }
+}
+
+.btn-none{
+  &:hover {
+    @apply bg-transparent;
+  }
+}
+
+.btn-primary {
+  @apply bg-primary-500 text-white;
+}

@@ -1,0 +1,44 @@
+.table-proposer {
+  thead {
+    th {
+      &:nth-child(1) {
+        width: 15%;
+        @apply cursor-pointer;
+      }
+
+      &:nth-child(2) {
+        width: 50%;
+      }
+
+      &:nth-child(3) {
+        width: 20%;
+        @apply text-center;
+      }
+
+      &:nth-child(4) {
+        width: 20%;
+        @apply cursor-pointer text-right;
+      }
+    }
+  }
+
+  tbody {
+    td {
+      &:nth-child(1) {
+        @apply text-lg font-bold pt-5 mb-2 z-20 lg:mb-0;
+      }
+
+      &:nth-child(2) {
+        @apply truncate font-bold w-full;
+      }
+
+      &:nth-child(3) {
+        @apply pb-5 font-bold text-left md:text-center;
+      }
+
+      &:nth-child(4) {
+        @apply pb-5 absolute right-0 text-right pt-5 text-xs leading-6 top-0 md:relative md:text-base md:leading-normal;
+      }
+    }
+  }
+}

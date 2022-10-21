@@ -1,0 +1,52 @@
+.react-select__control.react-select__control {
+  min-width: 300px;
+  @apply rounded-xl bg-gray-50 border-0 mt-2 py-0 w-auto py-0 px-2 cursor-pointer;
+}
+
+.react-select__control--is-focused.react-select__control--is-focused {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.react-select__control--menu-is-open,
+.react-select__control--menu-is-open:active,
+.react-select__control--menu-is-open:focus,
+.react-select__control--menu-is-open:hover,
+.react-select__control--menu-is-open:target,
+{
+  margin-bottom: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.react-select__placeholder.react-select__placeholder {
+  @apply text-sm text-gray-700;
+}
+
+.react-select__indicator.react-select__indicator {
+  @apply text-gray-700;
+}
+
+.react-select__indicator-separator.react-select__indicator-separator {
+  @apply hidden;
+}
+
+.react-select__menu.react-select__menu {
+  border: 0 !important;
+  box-shadow: none;
+
+  @apply mt-0 rounded-b-xl rounded-t-none shadow-sm;
+}
+
+.react-select__multi-value.react-select__multi-value {
+  @apply bg-white border border-gray-100 px-2 rounded-xl flex items-center;
+}
+
+.react-select__multi-value__label.react-select__multi-value__label {
+}
+
+.react-select__multi-value__remove.react-select__multi-value__remove {
+  @apply bg-gray-700 rounded-full text-white m-2 p-0;
+}
