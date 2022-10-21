@@ -1,0 +1,52 @@
+e// MongoDB Playground
+// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
+
+// The current database to use.
+use ("optimist_data");
+
+db.getCollection("proposers-scoreboard").drop()
+
+const proposerAddress = "0xfeeda3882dd44aeb394caeef941386e7ed88e0e0"
+
+// Search for documents in the current collection.
+const blockCount = db.getCollection('blocks').aggregate([
+    {
+      $match: {
+        proposer: { $not: { $size: 0 } },
+      },
+    },
+    { $unwind: "$proposer" },
+    {
+      $group: {
+        _id: "$proposer" ,
+        count: { $sum: 1 },
+      },
+    },
+    {
+      $match: {
+        count: { $gte: 2 },
+      },
+    },
+    { $sort: { count: -1 } },
+  ]
+  ).toArray()
+  const badBlockCount = db.getCollection('invalid-blocks').countDocuments({
+    proposer: proposerAddress,
+  })
+
+
+const proposers =  db.getCollection("proposers-scoreboard").find()
+
+const activeProposers = db.getCollection("proposers-scoreboard").find({isActive: true})
+
+activeProposers.forEach((proposer) => {
+  print(`[ACTIVE] proposers: ${proposer._id}`)
+})
+
+blockCount.forEach((proposer) => {
+  print(`[GoodBlocks] proposer: ${proposer._id} count: ${proposer.count}`)
+})
+
+proposers.forEach((proposer) => {
+  print(`[SCOREBOARD]: ${proposer._id} goodBlock: ${proposer.goodBlock} badBlock: ${proposer.badBlock } isActive: ${proposer.isActive}`)
+})

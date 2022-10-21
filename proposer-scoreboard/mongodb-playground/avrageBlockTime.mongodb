@@ -1,0 +1,24 @@
+// MongoDB Playground
+// To disable this template go to Settings | MongoDB | Use Default Template For Playground.
+// Make sure you are connected to enable completions and to be able to run a playground.
+// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
+
+// Select the database to use.
+use('optimist_data');
+const seven_days = 604800000
+    db.getCollection('blocks').aggregate([
+      {
+    "$match": {
+      "timeBlockL2": {
+        "$gte": new Date() - seven_days
+      }
+    }
+  },
+  {
+    $group: {
+      _id: "1",
+      avg_value: { $avg: "$value" }
+    }
+  }
+    ]);
+

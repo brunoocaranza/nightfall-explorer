@@ -1,0 +1,67 @@
+PROFILE=xxxxxxxxxx #Aws cli profile ~/.aws/credentials
+REGION=xxxxxxxxxx #Aws region 
+TOKEN=xxxxxxx #Github token
+BRANCH=xxxxxx #Github branch from which we will deploy. Aws Pipeline will also build from this branch
+SECRETPATH=/xxxxxx/xxxxx/xxxx #secretpath where to store github token. Used by AWS Pipeline to pull and create hooks
+ACCOUNTID=xxxxxxxxxx #Aws accout id
+BASE_REPO_NAME=xxxxxxxxx # Name for ECR base repo
+
+ECRURL=${ACCOUNTID}.dkr.ecr.${REGION}.amazonaws.com #Base ECR URL for account and region
+
+# Repository list
+# ECR repository will be created from repository name
+# Docker image will be created from repository name
+# And all images will be pushed to ECR
+repo=(
+    "github.com/Owner/api.git"
+    "github.com/Owner/frontend.git"
+)
+
+# Add git tocken to secret manager
+aws secretsmanager create-secret --profile ${PROFILE} --region ${REGION} --name ${SECRETPATH} --secret-string ${TOKEN} >/dev/null 2>&1
+# Reference git token to cloudbuild
+aws codebuild import-source-credentials --profile ${PROFILE} --region ${REGION} --server-type GITHUB --auth-type PERSONAL_ACCESS_TOKEN --token ${TOKEN} >/dev/null 2>&1
+
+#create aws ecr repository for backend
+
+# Create Aws ecr base repository
+# This repository will hold nodejs and nginx
+# Reason for this is Docker Hub limitation on pull for free accounts.
+aws ecr create-repository --repository-name $BASE_REPO_NAME --profile ${PROFILE} --region ${REGION} --image-scanning-configuration scanOnPush=true --image-tag-mutability MUTABLE >/dev/null 2>&1
+
+# Pull nodejs image
+docker pull node:16.17.0-alpine
+# Pull nginx image
+docker pull nginx:alpine
+
+# Login docker to aws ECR
+aws ecr get-login-password --region ${REGION} --profile ${PROFILE} | docker login --username AWS --password-stdin ${ECRURL}
+mkdir temp
+cd temp
+for i in "${repo[@]}"; do
+    # Repository name from git url as defined it will take 3. string from url (f3)
+    repo_name=$(echo ${i} | cut -d'/' -f3 | cut -d'.' -f1)
+    # Create ECR repository for service
+    aws ecr create-repository --repository-name ${repo_name} --profile ${PROFILE} --region ${REGION} --image-scanning-configuration scanOnPush=true --image-tag-mutability MUTABLE >/dev/null
+
+    git clone https://${TOKEN}@${i}
+    git checkout ${BRANCH}
+
+    cd ${repo_name}
+    docker build -t ${repo_name} .
+    docker tag ${repo_name} ${ECRURL}/${repo_name}:latest
+    docker push ${ECRURL}/${repo_name}:latest
+    cd ..
+done
+cd ..
+rm -Rf temp
+
+#push node16.17.0-alpine to base repository
+docker tag node:16.17.0-alpine ${ECRURL}/$BASE_REPO_NAME:node-alpine
+docker push ${ECRURL}/$BASE_REPO_NAME:node-alpine
+
+#push nginx:alpine to base repository
+docker tag nginx:alpine ${ECRURL}/$BASE_REPO_NAME:nginx-alpine
+docker push ${ECRURL}/$BASE_REPO_NAME:nginx-alpine
+
+
