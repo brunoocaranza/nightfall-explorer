@@ -55,7 +55,7 @@ export class RateLimiterGuard implements CanActivate {
     context: ExecutionContext
   ): Promise<{ record: RateLimitRecord; ip: string; clientIp: string }> {
     const req = context.switchToHttp().getRequest();
-    this.logger.log(req.headers);
+    this.logger.log(JSON.stringify(req.headers, null, 4));
     const clientIp = req['headers']['X-Forwarded-For'];
     const ip = req.ips.length ? req.ips[0] : req.ip;
     const record = await this.cacheManager.get<RateLimitRecord>(ip);
