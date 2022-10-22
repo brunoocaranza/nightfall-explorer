@@ -7,6 +7,7 @@ import { DatabaseModule } from './config/database';
 import { RequestMiddleware, SearchMiddleware } from './middlewares';
 import { APP_GUARD } from '@nestjs/core';
 import { RateLimiterGuard } from './guards';
+import { ScheduleModule } from '@nestjs/schedule';
 
 const envConfig = () => {
   const option: ConfigModuleOptions = {
@@ -26,6 +27,7 @@ const MODULES = [
   ConfigModule.forRoot(envConfig()),
   DatabaseModule,
   CacheModule.register(),
+  ScheduleModule.forRoot(),
   HealthModule,
   BlockExplorerModule,
 ];

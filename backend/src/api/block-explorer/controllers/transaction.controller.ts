@@ -28,6 +28,6 @@ export class TransactionController {
   @Get('/stats/pending/count')
   @ApiResponse({ status: 200, type: Number })
   pendingCount(): Promise<number | string> {
-    return this._proposerService.countPendingTransactions();
+    return this._proposerService.getPendingTransactions();
   }
 }

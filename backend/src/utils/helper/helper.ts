@@ -125,4 +125,8 @@ export class HelperService {
       ],
     };
   }
+
+  public static typeOfNumber(value: any): boolean {
+    return typeof value === 'number';
+  }
 }

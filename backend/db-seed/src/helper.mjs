@@ -30,18 +30,8 @@ const generateHashesTimes = (times) => {
   return result;
 };
 
-function addRandomNumberOfHours(date) {
-  const newDate = new Date(date.getTime());
-  newDate.setTime(date.getTime() + randomNumBetween(1, 6) * 60 * 60 * 1000);
-
-  return newDate;
+function add5Minutes(date) {
+  return new Date(date.add(5, 'm'));
 }
 
-export {
-  generateHash,
-  generateAddress,
-  randomNumBetween,
-  generateHashesTimes,
-  tenPercenteChance,
-  addRandomNumberOfHours,
-};
+export { generateHash, generateAddress, randomNumBetween, generateHashesTimes, tenPercenteChance, add5Minutes };

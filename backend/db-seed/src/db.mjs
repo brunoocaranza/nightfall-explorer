@@ -1,5 +1,5 @@
-import { MongoClient } from "mongodb";
-import config from "./config.mjs";
+import { MongoClient } from 'mongodb';
+import config from './config.mjs';
 
 export class DBClient {
   db;
@@ -8,7 +8,7 @@ export class DBClient {
     try {
       const connection = new MongoClient(config.db.url);
       await connection.connect();
-      console.log("Successfully connected to database");
+      console.log('Successfully connected to database');
 
       this.db = connection.db(config.db.dbName);
     } catch (error) {
@@ -18,26 +18,20 @@ export class DBClient {
   }
 
   async clearCollection() {
-    const collections = [
-      config.db.blockCollection,
-      config.db.proposerCollection,
-      config.db.transactionCollection,
-    ];
-    console.log("\n********** Clearing collections **********");
+    const collections = [config.db.blockCollection, config.db.proposerCollection, config.db.transactionCollection];
+    console.log('\n********** Clearing collections **********');
     for (const collectionName of collections) {
       const collection = this.initCollection(collectionName);
       try {
         await collection.deleteMany({});
         console.log(`${collectionName} collection truncated`);
       } catch (error) {
-        console.log(
-          `This error occured probably because ${collectionName} doesn't exist`
-        );
+        console.log(`This error occured probably because ${collectionName} doesn't exist`);
         console.log(error);
       }
     }
 
-    console.log("****************************************");
+    console.log('****************************************');
   }
 
   async bulkInsert(entities, collectionName) {
@@ -46,6 +40,16 @@ export class DBClient {
       await collection.insertMany(entities);
     } catch (error) {
       console.log(`${collectionName}: bulk insert error`);
+      console.log(error);
+    }
+  }
+
+  async findAll(collectionName) {
+    try {
+      const collection = this.initCollection(collectionName);
+      return await collection.find().toArray();
+    } catch (error) {
+      console.log(`${collectionName}: findAll error`);
       console.log(error);
     }
   }
