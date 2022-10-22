@@ -86,6 +86,7 @@ export class CiCdConstruct extends Construct {
               "docker tag $BASE_REPO_URI:nginx-alpine nginx:alpine",
               `docker build -t $ECR_REPO_URI:$TAG .`,
               "docker push $ECR_REPO_URI:$TAG",
+              "cd ..",
             ],
           },
           post_build: {
