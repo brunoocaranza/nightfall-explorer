@@ -1,4 +1,4 @@
-import { CACHE_MANAGER, CanActivate, ExecutionContext, Inject, Injectable, Logger } from '@nestjs/common';
+import { CACHE_MANAGER, CanActivate, ExecutionContext, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cache } from 'cache-manager';
 import { RateLimitException } from '../utils/exceptions';
@@ -13,7 +13,6 @@ type RateLimitRecord = {
 export class RateLimiterGuard implements CanActivate {
   private ttl: number;
   private limit: number;
-  private logger = new Logger('RateLimiterCtx');
 
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache, private config: ConfigService) {
     this.ttl = this.config.get<number>('app.throttleTtl');
@@ -22,11 +21,6 @@ export class RateLimiterGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const { record, ip } = await this.getRateLimitRecord(context);
-    this.logger.log('**************** START IP ADDRESS ***************');
-
-    this.logger.log(`Client IP: ${ip}`);
-
-    this.logger.log('**************** END IP ADDRESS ***************');
     if (record) {
       if (record.numOfRequests >= this.limit) {
         throw new RateLimitException();
@@ -53,7 +47,6 @@ export class RateLimiterGuard implements CanActivate {
    */
   private async getRateLimitRecord(context: ExecutionContext): Promise<{ record: RateLimitRecord; ip: string }> {
     const req = context.switchToHttp().getRequest();
-    this.logger.log(JSON.stringify(req.headers, null, 4));
     const ip = req['headers']['x-forwarded-for'];
     const record = await this.cacheManager.get<RateLimitRecord>(ip);
     return { record, ip };
