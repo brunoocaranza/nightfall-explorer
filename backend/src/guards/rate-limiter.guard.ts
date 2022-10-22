@@ -21,10 +21,10 @@ export class RateLimiterGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const { record, ip, clientIp } = await this.getRateLimitRecord(context);
+    const { record, ip } = await this.getRateLimitRecord(context);
     this.logger.log('**************** START IP ADDRESS ***************');
 
-    this.logger.log(`Private: ${ip}, Client: ${clientIp}`);
+    this.logger.log(`Client IP: ${ip}`);
 
     this.logger.log('**************** END IP ADDRESS ***************');
     if (record) {
@@ -51,15 +51,12 @@ export class RateLimiterGuard implements CanActivate {
    * @param context
    * @returns record: RateLimitRecord and ip: string
    */
-  private async getRateLimitRecord(
-    context: ExecutionContext
-  ): Promise<{ record: RateLimitRecord; ip: string; clientIp: string }> {
+  private async getRateLimitRecord(context: ExecutionContext): Promise<{ record: RateLimitRecord; ip: string }> {
     const req = context.switchToHttp().getRequest();
     this.logger.log(JSON.stringify(req.headers, null, 4));
-    const clientIp = req['headers']['X-Forwarded-For'];
-    const ip = req.ips.length ? req.ips[0] : req.ip;
+    const ip = req['headers']['x-forwarded-for'];
     const record = await this.cacheManager.get<RateLimitRecord>(ip);
-    return { record, ip, clientIp };
+    return { record, ip };
   }
 
   /**
