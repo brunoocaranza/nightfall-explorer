@@ -8,9 +8,12 @@ const generateProposers = (length) => Array.from({ length }, (_, ind) => new Pro
 const getRandomProposerAddress = (proposers) => proposers[Math.floor(Math.random() * proposers.length)]._id;
 
 const insertProposers = async (dbClient) => {
+  const currentProposers = await dbClient.findAll(config.db.proposerCollection);
+
   const proposers = generateProposers(config.numOfProposers);
 
   await dbClient.bulkInsert(proposers, config.db.proposerCollection);
+  proposers.push(...currentProposers);
   return proposers;
 };
 

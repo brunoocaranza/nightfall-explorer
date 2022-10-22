@@ -16,6 +16,13 @@ import {
   PROPOSER_MEMPOOL_ERROR,
   ResourceNotFoundException,
 } from '../../../../src/utils/exceptions';
+import { CronJob } from 'cron';
+
+jest.mock('cron', () => {
+  const mScheduleJob = { start: jest.fn(), stop: jest.fn() };
+  const mCronJob = jest.fn(() => mScheduleJob);
+  return { CronJob: mCronJob };
+});
 
 describe('Proposer Service', () => {
   let proposerService: ProposerService;
@@ -68,6 +75,46 @@ describe('Proposer Service', () => {
 
   it('should be defined', () => {
     expect(proposerService).toBeDefined();
+  });
+
+  it('should init cron job and update cache on application startup', async () => {
+    const countPendingTransactionsSpy = jest
+      .spyOn(proposerService, 'countPendingTransactions')
+      .mockResolvedValueOnce(2);
+    const startCronJobSpy = jest.spyOn(proposerService, 'startCronJob');
+
+    await proposerService.init();
+
+    expect(countPendingTransactionsSpy).toHaveBeenCalled();
+    expect(startCronJobSpy).toHaveBeenCalled();
+  });
+
+  it('should start cron job', (done) => {
+    const job = new CronJob('*/30 * * * * *', jest.fn());
+    proposerService.startCronJob();
+
+    expect(CronJob).toHaveBeenCalled();
+    expect(job.start).toHaveBeenCalled();
+    done();
+  });
+
+  describe('getPendingTransactions', () => {
+    it('should return pending tx number from class variable', async () => {
+      jest.spyOn(proposerService, 'countPendingTransactions').mockResolvedValueOnce(2);
+      await proposerService.init();
+
+      const result = await proposerService.getPendingTransactions();
+
+      expect(result).toBe(2);
+    });
+
+    it('should return pending tx number by calling proposer endpoint', async () => {
+      jest.spyOn(proposerService, 'countPendingTransactions').mockResolvedValueOnce(null);
+      await proposerService.init();
+      await proposerService.getPendingTransactions();
+
+      expect(proposerService.countPendingTransactions).toHaveBeenCalled();
+    });
   });
 
   describe('Proposer mempool', () => {

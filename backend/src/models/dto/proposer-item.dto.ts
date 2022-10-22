@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Transform, TransformFnParams } from 'class-transformer';
 import { ProposerEntity } from '../../schemas';
-import { NOT_APPLICABLE, PROPOSER_ITEM_TRANSFORM_CTX } from '../../utils';
+import { HelperService, NOT_APPLICABLE, PROPOSER_ITEM_TRANSFORM_CTX } from '../../utils';
 import Web3 from 'web3';
 import { Logger } from '@nestjs/common';
 import { HEX_STRING_TO_NUMBER_CAST_ERROR } from '../../utils/exceptions';
@@ -35,15 +35,15 @@ const convertStakeAmount = (params: TransformFnParams) => {
 
 const convertGoodBlocks = (params: TransformFnParams) => {
   const proposer = params.obj;
-  let result = NOT_APPLICABLE;
-  if (proposer.goodBlocks >= 0) result = proposer.goodBlocks;
+  let result = 0;
+  if (HelperService.typeOfNumber(proposer.goodBlocks) && proposer.goodBlocks >= 0) result = proposer.goodBlocks;
   return result;
 };
 
 const convertBadBlocks = (params: TransformFnParams) => {
   const proposer = params.obj;
-  let result = NOT_APPLICABLE;
-  if (proposer.badBlocks >= 0) result = proposer.badBlocks;
+  let result = 0;
+  if (HelperService.typeOfNumber(proposer.badBlocks) && proposer.badBlocks >= 0) result = proposer.badBlocks;
   return result;
 };
 

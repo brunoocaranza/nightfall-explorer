@@ -4,7 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { IInitService } from './api/block-explorer/services';
 import { AppModule } from './app.module';
 import { configureApp } from './config/configure-app.config';
-import { CONTRACT_CLIENT_SERVICE } from './utils';
+import { CONTRACT_CLIENT_SERVICE, PROPOSER_SERVICE } from './utils';
 import { Logger } from './config/logger/logger.service';
 
 /*
@@ -12,7 +12,7 @@ import { Logger } from './config/logger/logger.service';
  */
 const onBootInit = async (app: INestApplication) => {
   console.log('###################################### Class initialization ######################################');
-  for (const className of [CONTRACT_CLIENT_SERVICE]) {
+  for (const className of [CONTRACT_CLIENT_SERVICE, PROPOSER_SERVICE]) {
     const instance: IInitService = app.get(className);
     await instance.init();
   }

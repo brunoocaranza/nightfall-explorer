@@ -2,6 +2,7 @@ import { DBClient } from './db.mjs';
 import { insertProposers, insertTxs, insertBlocks, getRandomProposerAddress } from './service.mjs';
 import config from './config.mjs';
 import { Block } from './models/block.mjs';
+import moment from 'moment';
 
 const initDBConnection = async () => {
   const dbClient = new DBClient();
@@ -9,6 +10,7 @@ const initDBConnection = async () => {
 
   return dbClient;
 };
+const startDate = moment().subtract(9.59, 'y');
 
 const generateBlocksChunk = (
   dbClient,
@@ -36,7 +38,7 @@ const generateBlocksChunk = (
           block.blockNumberL2,
           block.blockHash,
           getRandomProposerAddress(proposers),
-          block.timeBlockL2
+          moment(block.timeBlockL2)
         );
   };
 
@@ -45,7 +47,7 @@ const generateBlocksChunk = (
     startingBlockNumber,
     previousBlockHash,
     getRandomProposerAddress(proposers),
-    new Date()
+    startDate
   );
 };
 async function main() {

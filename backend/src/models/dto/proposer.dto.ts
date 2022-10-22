@@ -8,8 +8,8 @@ const convertStats = (params: TransformFnParams) => {
   const goodBlocks = proposer.goodBlocks;
   const badBlocks = proposer.badBlocks;
 
-  if (badBlocks >= 0) result.badBlocks = badBlocks;
-  if (goodBlocks >= 0) result.goodBlocks = goodBlocks;
+  if (HelperService.typeOfNumber(badBlocks) && badBlocks >= 0) result.badBlocks = badBlocks;
+  if (HelperService.typeOfNumber(goodBlocks) && goodBlocks >= 0) result.goodBlocks = goodBlocks;
 
   if (HelperService.isNumberType(result.goodBlocks)) {
     result.blocks = <number>result.goodBlocks;
@@ -23,9 +23,9 @@ export class ProposerStatsDTO {
   @ApiProperty()
   blocks = 0;
   @ApiProperty()
-  goodBlocks: number | string = NOT_APPLICABLE;
+  goodBlocks: number | string = 0;
   @ApiProperty()
-  badBlocks: number | string = NOT_APPLICABLE;
+  badBlocks: number | string = 0;
   @ApiProperty()
   challengedBlocks: number | string = NOT_APPLICABLE;
 }

@@ -19,10 +19,14 @@ import {
 import { BlockSearchFields, mapToClass, ProposerSearchFields } from '../../../../utils';
 import { IChallengedBlockRepository, IProposerRepository } from '../../../../repositories';
 import { PROPOSER_FEES_ERROR, PROPOSER_MEMPOOL_ERROR } from '../../../../utils/exceptions';
+import { CronExpression } from '@nestjs/schedule';
+import { CronJob } from 'cron';
+import { IInitService } from '../iinit.service';
 
 @Injectable()
-export class ProposerService implements IProposerService {
+export class ProposerService implements IProposerService, IInitService {
   private readonly logger = new Logger(PROPOSER_SERVICE_CTX);
+  private numberOfPendingTxs: string | number;
 
   constructor(
     @Inject(CONTRACT_CLIENT_SERVICE) private readonly _contractClient: IContractClientService,
@@ -30,6 +34,12 @@ export class ProposerService implements IProposerService {
     @Inject(PROPOSER_REPOSITORY) private readonly _proposerRepo: IProposerRepository,
     private readonly _httpService: HttpService
   ) {}
+
+  async init(): Promise<void> {
+    this.logger.log(`[${PROPOSER_SERVICE_CTX}] service initialization`);
+    this.setNumberOfPendingTransactions();
+    this.startCronJob();
+  }
 
   /**
    * Used to retrieve list of all addresses
@@ -83,6 +93,15 @@ export class ProposerService implements IProposerService {
     };
 
     return proposer;
+  }
+
+  /**
+   * Retrieves pending txs either from class variable or from calling proposer
+   * @returns
+   */
+  async getPendingTransactions(): Promise<number | string> {
+    if (this.numberOfPendingTxs != undefined || this.numberOfPendingTxs != null) return this.numberOfPendingTxs;
+    return this.countPendingTransactions();
   }
 
   /**
@@ -144,5 +163,16 @@ export class ProposerService implements IProposerService {
         this.logger.error(result.reason);
       }
     });
+  }
+
+  async setNumberOfPendingTransactions(): Promise<void> {
+    this.logger.log('Fetching proposer pending transactions');
+    this.numberOfPendingTxs = await this.countPendingTransactions();
+  }
+
+  // Register cron job
+  startCronJob() {
+    const job = new CronJob(CronExpression.EVERY_MINUTE, this.setNumberOfPendingTransactions.bind(this));
+    job.start();
   }
 }

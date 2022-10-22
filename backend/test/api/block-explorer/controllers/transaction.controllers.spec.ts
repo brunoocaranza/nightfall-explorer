@@ -16,7 +16,7 @@ describe('Transaction Controller', () => {
   };
 
   const mockProposerService = {
-    countPendingTransactions: jest.fn().mockReturnValue(5),
+    getPendingTransactions: jest.fn().mockReturnValue(5),
   };
 
   let findTransactionSpy;
@@ -61,7 +61,7 @@ describe('Transaction Controller', () => {
   it('should count pending transactions', async () => {
     const result = await transactionController.pendingCount();
 
-    expect(mockProposerService.countPendingTransactions).toHaveBeenCalled();
+    expect(mockProposerService.getPendingTransactions).toHaveBeenCalled();
     expect(result).toBe(5);
   });
 });
