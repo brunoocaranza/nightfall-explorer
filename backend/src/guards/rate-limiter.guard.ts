@@ -22,7 +22,9 @@ export class RateLimiterGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const { record, ip } = await this.getRateLimitRecord(context);
-
+    this.logger.log('**************** START IP ADDRESS ***************');
+    this.logger.log(ip);
+    this.logger.log('**************** END IP ADDRESS ***************');
     if (record) {
       if (record.numOfRequests >= this.limit) {
         throw new RateLimitException();
