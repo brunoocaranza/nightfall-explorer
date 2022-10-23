@@ -11,7 +11,7 @@ import {
   PaginationModel,
 } from '../../../../models';
 import { IBlockRepository, IChallengedBlockRepository } from '../../../../repositories';
-import { BadBlocks, BlockSearchFields, HelperService, mapToClass, TransactionSearchFields } from '../../../../utils';
+import { BlockSearchFields, HelperService, mapToClass, TransactionSearchFields } from '../../../../utils';
 import {
   BLOCK_REPOSITORY,
   BLOCK_SERVICE,
@@ -90,21 +90,16 @@ export class BlockService implements IBlockService {
    * @param paginationParams contains limit, page, sortDirection (default desc) and sortColumn (default timeBlockL2)
    * @returns PaginationModel<BlockItemDTO>
    */
+  /* istanbul ignore next */
   async findPaginated(paginationParams: BlockPaginationParams): Promise<PaginationModel<BlockItemDTO>> {
-    let blocks;
-
     // We have to set prototype because at repository level type of pagination params are determined using instance of
     Object.setPrototypeOf(paginationParams, new BlockPaginationParams());
 
-    // badBlocks flag indicates which blocks should be fetched (challenged or good blocks)
-    if (paginationParams.badBlocks === BadBlocks.SHOW_BAD) {
-      delete paginationParams.badBlocks; // Remove badBlocks flag because it's not field nor filter param
-      blocks = await this._challengedBlockRepo.findPaginated(paginationParams);
-    } else blocks = await this._blockRepo.findPaginated(paginationParams);
+    const result = await this._blockRepo.paginaton(paginationParams);
 
     return {
-      ...blocks,
-      docs: blocks.docs.map((block) => {
+      ...result,
+      docs: result.docs.map((block) => {
         return mapToClass(block, BlockItemDTO);
       }),
     };
