@@ -8,6 +8,7 @@ import { RequestMiddleware, SearchMiddleware } from './middlewares';
 import { APP_GUARD } from '@nestjs/core';
 import { RateLimiterGuard } from './guards';
 import { ScheduleModule } from '@nestjs/schedule';
+import { RedisModule } from './config/redis';
 
 const envConfig = () => {
   const option: ConfigModuleOptions = {
@@ -28,6 +29,7 @@ const MODULES = [
   DatabaseModule,
   CacheModule.register(),
   ScheduleModule.forRoot(),
+  RedisModule,
   HealthModule,
   BlockExplorerModule,
 ];
