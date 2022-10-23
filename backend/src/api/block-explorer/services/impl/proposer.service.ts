@@ -37,7 +37,7 @@ export class ProposerService implements IProposerService, IInitService {
 
   async init(): Promise<void> {
     this.logger.log(`[${PROPOSER_SERVICE_CTX}] service initialization`);
-    this.setNumberOfPendingTransactions();
+    await this.setNumberOfPendingTransactions();
     this.startCronJob();
   }
 
