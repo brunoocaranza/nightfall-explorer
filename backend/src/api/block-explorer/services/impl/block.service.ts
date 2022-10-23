@@ -90,16 +90,18 @@ export class BlockService implements IBlockService {
    * @param paginationParams contains limit, page, sortDirection (default desc) and sortColumn (default timeBlockL2)
    * @returns PaginationModel<BlockItemDTO>
    */
-  /* istanbul ignore next */
   async findPaginated(paginationParams: BlockPaginationParams): Promise<PaginationModel<BlockItemDTO>> {
-    // We have to set prototype because at repository level type of pagination params are determined using instance of
-    Object.setPrototypeOf(paginationParams, new BlockPaginationParams());
+    let blocks;
 
-    const result = await this._blockRepo.paginaton(paginationParams);
+    // badBlocks flag indicates that challenged blocks should be fetched
+    if (paginationParams.badBlocks) {
+      delete paginationParams.badBlocks; // Remove badBlocks flag because it's not field nor filter param
+      blocks = await this._challengedBlockRepo.findPaginated(paginationParams);
+    } else blocks = await this._blockRepo.findPaginated(paginationParams);
 
     return {
-      ...result,
-      docs: result.docs.map((block) => {
+      ...blocks,
+      docs: blocks.docs.map((block) => {
         return mapToClass(block, BlockItemDTO);
       }),
     };

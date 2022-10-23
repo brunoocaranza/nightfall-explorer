@@ -5,14 +5,11 @@ import {
   QueryFilter,
   PaginationModel,
   ProposerPaginationParams,
-  PaginationBuilder,
-  BlockItemDTO,
-  ProposerItemDTO,
 } from '../../models';
-import { BlockSearchFields, mapToClass, ProposerSearchFields, Resources } from '../../utils';
+import { BlockSearchFields, ProposerSearchFields, Resources } from '../../utils';
 import { ResourceNotFoundException } from '../../utils/exceptions';
 import { IBaseRepository } from '../ibase.repository';
-export type NEKITIP = BlockItemDTO | ProposerItemDTO;
+
 export abstract class BaseRepository<T> implements IBaseRepository<T> {
   constructor(private readonly _model: MongooseModel<T>, private readonly _resource: Resources) {}
 
@@ -59,56 +56,6 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
     }
 
     return this._model.paginate(query, { ...paginationParams, sort: sortString, lean: true });
-  }
-
-  /* istanbul ignore next */
-  async paginaton(paginationParams: BlockPaginationParams | ProposerPaginationParams): Promise<PaginationModel<T>> {
-    const sortString =
-      paginationParams.sortDirection === 'asc' ? paginationParams.sortColumn : `-${paginationParams.sortColumn}`;
-
-    const skip = paginationParams.limit * (paginationParams.page - 1);
-    const query: QueryFilter = {};
-
-    if (paginationParams instanceof BlockPaginationParams) {
-      // Pickup default values
-      paginationParams = Object.assign(new BlockPaginationParams(), paginationParams);
-
-      // For now only filter is block's proposer. If something new comes make this more dynamic
-      if ((paginationParams as BlockPaginationParams).proposer) {
-        query[BlockSearchFields.PROPOSER] = (paginationParams as BlockPaginationParams).proposer;
-        delete (paginationParams as BlockPaginationParams).proposer;
-      }
-    } else {
-      // Pickup default values
-      paginationParams = Object.assign(new ProposerPaginationParams(), paginationParams);
-      query[ProposerSearchFields.IS_ACTIVE] = true;
-
-      if ((paginationParams as ProposerPaginationParams).address) {
-        // Address field will have list of addresses devided by ,
-        const addresses = (paginationParams as ProposerPaginationParams).address.split(',');
-        query[ProposerSearchFields.ADDRESS] = { $in: addresses };
-      }
-    }
-
-    const totalDocs = await this.count();
-    const docs = (await this._model
-      .find(query)
-      .skip(skip)
-      .limit(paginationParams.limit)
-      .sort(sortString)
-      .lean()) as T[];
-
-    return new PaginationBuilder<T>()
-      .setLimit(Number(paginationParams.limit))
-      .setPage(Number(paginationParams.page))
-      .setTotalDocs(totalDocs)
-      .setTotalPages()
-      .setDocs(docs)
-      .setHasPrevPage()
-      .setPrevPage()
-      .setHasNextPage()
-      .setNextPage()
-      .setPagingCounter();
   }
 
   /**

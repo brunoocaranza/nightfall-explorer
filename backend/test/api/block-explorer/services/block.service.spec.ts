@@ -101,13 +101,13 @@ describe('Block Service', () => {
     expect(queryBlockSpy).toHaveBeenCalledWith(filter);
   });
 
-  // it('should return blocks paginated', async () => {
-  //   const result = await blockService.findPaginated(paginationParams);
+  it('should return blocks paginated', async () => {
+    const result = await blockService.findPaginated(paginationParams);
 
-  //   expect(result.docs.length).toBe(blockPaginated.docs.length);
-  //   expect(result).toMatchObject(blockPaginated);
-  //   expect(findPaginatedSpy).toReturnWith(blockEntityPaginated);
-  // });
+    expect(result.docs.length).toBe(blockPaginated.docs.length);
+    expect(result).toMatchObject(blockPaginated);
+    expect(findPaginatedSpy).toReturnWith(blockEntityPaginated);
+  });
 
   it('should count blocks', async () => {
     const result = await blockService.count();
@@ -144,15 +144,15 @@ describe('Block Service', () => {
     expect(queryChallengedBlockSpy).toHaveBeenCalledWith(challengedFilter);
   });
 
-  // it('should query paginated challenged blocks', async () => {
-  //   const findPaginatedSpy = jest.spyOn(mockChallengedBlockRepository, 'findPaginated');
+  it('should query paginated challenged blocks', async () => {
+    const findPaginatedSpy = jest.spyOn(mockChallengedBlockRepository, 'findPaginated');
 
-  //   const result = await blockService.findPaginated({ ...paginationParams, badBlocks: BadBlocks.SHOW_BAD });
+    const result = await blockService.findPaginated({ ...paginationParams, badBlocks: BadBlocks.SHOW_BAD });
 
-  //   expect(result.docs.length).toBe(blockPaginated.docs.length);
-  //   expect(result).toMatchObject(blockPaginated);
-  //   expect(findPaginatedSpy).toHaveBeenCalledWith(paginationParams);
-  // });
+    expect(result.docs.length).toBe(blockPaginated.docs.length);
+    expect(result).toMatchObject(blockPaginated);
+    expect(findPaginatedSpy).toHaveBeenCalledWith(paginationParams);
+  });
 
   describe('Challenged block stats', () => {
     it('should calculate challenged block stats', async () => {
