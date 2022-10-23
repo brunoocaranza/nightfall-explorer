@@ -66,7 +66,7 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
     const sortString =
       paginationParams.sortDirection === 'asc' ? paginationParams.sortColumn : `-${paginationParams.sortColumn}`;
 
-    const skip = paginationParams.limit * (paginationParams.page - 1);
+    const skipValue = paginationParams.limit * (paginationParams.page - 1);
     const query: QueryFilter = {};
 
     if (paginationParams instanceof BlockPaginationParams) {
@@ -93,7 +93,7 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
     const totalDocs = await this.count();
     const docs = (await this._model
       .find(query)
-      .skip(skip)
+      .skip(skipValue)
       .limit(paginationParams.limit)
       .sort(sortString)
       .lean()) as T[];

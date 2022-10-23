@@ -95,7 +95,12 @@ export class BlockService implements IBlockService {
     // We have to set prototype because at repository level type of pagination params are determined using instance of
     Object.setPrototypeOf(paginationParams, new BlockPaginationParams());
 
-    const result = await this._blockRepo.paginaton(paginationParams);
+    let result;
+    // badBlocks flag indicates that challenged blocks should be fetched
+    if (paginationParams.badBlocks) {
+      delete paginationParams.badBlocks; // Remove badBlocks flag because it's not field nor filter param
+      result = await this._challengedBlockRepo.paginaton(paginationParams);
+    } else result = await this._blockRepo.paginaton(paginationParams);
 
     return {
       ...result,
