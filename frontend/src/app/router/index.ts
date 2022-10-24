@@ -11,12 +11,6 @@ import {
     ERROR_PAGE,
 } from "./consts";
 
-// import Block from "../../pages/Block";
-// import SearchNotFound from "../../pages/SearchNotFound";
-// import Transaction from "../../pages/Transaction";
-// import Proposer from "../../pages/Proposer";
-// import ChallengedBlock from "../../pages/ChallengedBlock";
-
 import Landing from "../../pages/Landing";
 import NotFound from "../../pages/NotFound";
 import ServerError from "../../pages/ServerError";

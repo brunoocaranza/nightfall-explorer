@@ -9,9 +9,10 @@ import { IBlockResponse, IChallengedBlockResponse } from "../../app/consts/block
 import IconBlock from "jsx:../../assets/images/icons/blocks.svg";
 
 const Block = () => {
-    const { hash } = useParams();
     const { t } = useTranslation();
+    const { hash } = useParams();
     const [searchParams] = useSearchParams();
+
     const isChallenged = searchParams.get("challenged") === String(1);
 
     const { data: challengedBlockData, isFetching: isFetchingChallengedBlock } = useChallengedBlock(Number(hash), isChallenged);

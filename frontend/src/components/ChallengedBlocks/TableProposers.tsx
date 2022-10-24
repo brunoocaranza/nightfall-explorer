@@ -4,11 +4,11 @@ import { useTranslation } from "react-i18next";
 import { IChallengedBlock, IChallengedBlocksResponse } from "../../app/consts/block";
 
 interface ITableBlocks {
-    data: IChallengedBlocksResponse;
+    data: IChallengedBlocksResponse | undefined;
     isLoading: boolean;
     isError: boolean;
-    error: Error | null;
     page: number;
+    error: Error | null | unknown;
 }
 
 const TableProposers = ({ data, isLoading, isError, error, page }: ITableBlocks) => {
@@ -19,7 +19,7 @@ const TableProposers = ({ data, isLoading, isError, error, page }: ITableBlocks)
             return renderLoading();
         }
 
-        if (isError || !data.hasOwnProperty("docs")) {
+        if (isError || !data || !Object.prototype.hasOwnProperty.call(data, "docs")) {
             return renderError();
         }
 
