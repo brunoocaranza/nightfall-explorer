@@ -1,8 +1,9 @@
-import { CACHE_MANAGER, CanActivate, ExecutionContext, Inject, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Cache } from 'cache-manager';
 import { RateLimitException } from '../utils/exceptions';
 import moment from 'moment';
+import Redis from 'ioredis';
+import { REDIS_CLIENT } from '../utils';
 
 type RateLimitRecord = {
   numOfRequests: number;
@@ -13,8 +14,7 @@ type RateLimitRecord = {
 export class RateLimiterGuard implements CanActivate {
   private ttl: number;
   private limit: number;
-
-  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache, private config: ConfigService) {
+  constructor(private config: ConfigService, @Inject(REDIS_CLIENT) private readonly redisClient: Redis) {
     this.ttl = this.config.get<number>('app.throttleTtl');
     this.limit = this.config.get<number>('app.throttleLimit');
   }
@@ -26,7 +26,7 @@ export class RateLimiterGuard implements CanActivate {
         throw new RateLimitException();
       }
       record.numOfRequests++;
-      await this.updateRateLimitRecord(ip, record, this.calculateTtlResetTime(record.lastUpdate));
+      await this.updateRateLimitRecord(ip, record);
     } else
       await this.updateRateLimitRecord(
         ip,
@@ -48,7 +48,7 @@ export class RateLimiterGuard implements CanActivate {
   private async getRateLimitRecord(context: ExecutionContext): Promise<{ record: RateLimitRecord; ip: string }> {
     const req = context.switchToHttp().getRequest();
     const ip = req['headers']['x-forwarded-for'];
-    const record = await this.cacheManager.get<RateLimitRecord>(ip);
+    const record = JSON.parse(await this.redisClient.get(ip));
     return { record, ip };
   }
 
@@ -56,19 +56,8 @@ export class RateLimiterGuard implements CanActivate {
    * Updates rate limit record in cache with all informations
    * @param ip
    */
-  private async updateRateLimitRecord(ip: string, record: RateLimitRecord, ttl: number): Promise<void> {
-    await this.cacheManager.set<RateLimitRecord>(ip, record, ttl);
-  }
-
-  /**
-   * Calculates how many more seconds does client has until rate limit record is reseted from cache
-   * @param lastUpdateTimestamp
-   * @returns
-   */
-  private calculateTtlResetTime(lastUpdateTimestamp: string): number {
-    const lastUpdate = moment(lastUpdateTimestamp, 'x');
-    const now = moment();
-    const diff = now.diff(lastUpdate, 's');
-    return this.ttl - diff;
+  private async updateRateLimitRecord(ip: string, record: RateLimitRecord, ttl?: number): Promise<void> {
+    if (ttl) await this.redisClient.set(ip, JSON.stringify(record), 'EX', ttl);
+    else await this.redisClient.set(ip, JSON.stringify(record), 'KEEPTTL');
   }
 }

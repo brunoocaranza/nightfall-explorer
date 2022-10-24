@@ -29,9 +29,7 @@ const startupVariables = (app: INestApplication) => {
 };
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    logger: false,
-  });
+  const app = await NestFactory.create(AppModule);
 
   const { serverPort, serviceName, host, configService } = startupVariables(app);
 

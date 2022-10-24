@@ -22,6 +22,10 @@ const appConfiguration = () => {
       stateContract: 'State',
       shieldContract: 'Shield',
     },
+    redis: {
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+    },
     dashboardApiUrl: process.env.NIGHTFALL_DASHBOARD_URL,
     explorerSyncUrl: process.env.EXPLORER_SYNC_URL,
     web3ProviderOptions: {
