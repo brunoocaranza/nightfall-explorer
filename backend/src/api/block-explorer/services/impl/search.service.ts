@@ -197,7 +197,7 @@ export class SearchService implements ISearchService {
   }
 
   private setSearchResultType(block: BlockType): Resources {
-    if (block['invalidCode'] != undefined) return Resources.CHALLENGED_BLOCK_L1;
+    if (block instanceof ChallengedBlockDTO || block['invalidCode'] != undefined) return Resources.CHALLENGED_BLOCK_L1;
     return Resources.BLOCK_L1;
   }
 }
