@@ -72,7 +72,7 @@ export class ECSServiceGroup extends Construct {
     const baseRepo = Repository.fromRepositoryName(
       this,
       `${serviceConfig.hostname}-node-repo`,
-      `nightfall-explorer`
+      `explorer-nightfall`
     );
 
     // creates a pipeline for the service

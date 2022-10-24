@@ -3,7 +3,6 @@ import * as cdk from "aws-cdk-lib";
 import { ExplorerStack } from "../lib/stacks/explorer-stack";
 import * as config from "../lib/config";
 import { ExplorerTools } from "../lib/stacks/explorer-tools";
-import { RedisStack } from "../lib/stacks/elastic-cache";
 
 const { explorer } = config;
 
@@ -21,11 +20,6 @@ const nightfallApplicationStack = new ExplorerStack(
     env,
   }
 );
-
-const redisCluster = new RedisStack(app, `RedisCluster`, {
-  env,
-});
-
 // const explorerToolsStack = new ExplorerTools(app, `explorer-tools`, {
 //   env,
 //   name: `explorer-tools`,
