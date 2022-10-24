@@ -33,7 +33,7 @@ export class RedisConstruct extends Construct {
 
     const redisCluster = new redis.CfnCacheCluster(this, "RedisCluster", {
       autoMinorVersionUpgrade: true,
-      cacheNodeType: "cache.t2.micro",
+      cacheNodeType: "cache.m5.large",
       engine: "redis",
       numCacheNodes: 1,
       cacheSubnetGroupName: subnetGroup.ref,
