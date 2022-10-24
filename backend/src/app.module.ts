@@ -29,6 +29,7 @@ const MODULES = [
   DatabaseModule,
   CacheModule.register(),
   ScheduleModule.forRoot(),
+  // RedisModule,
   HealthModule,
   BlockExplorerModule,
 ];
