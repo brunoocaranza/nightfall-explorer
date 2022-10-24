@@ -5,34 +5,18 @@ import { BlockRepository } from '../../src/repositories';
 import { BlockDocument, BlockEntity } from '../../src/schemas';
 import { BlockSearchFields, DATABASE_CONNECTION_NAME } from '../../src/utils';
 import { ResourceNotFoundException } from '../../src/utils/exceptions';
-import { blockEntity, blockEntityPaginated, hash, paginationParams } from '../mocks';
+import { blockEntities, blockEntity, blockEntityPaginated, hash, paginationParams } from '../mocks';
 
 describe('Block Repository', () => {
   let blockRepository: BlockRepository;
   let mockBlockModel = {
     findOne: jest.fn(),
     count: jest.fn(),
-    find: jest.fn(() => {
-      skip: jest.fn(() => {
-        limit: jest.fn(() => {
-          sort: jest.fn(() => {
-            lean: jest.fn(() => {});
-          });
-        });
-      });
-    }),
-    paginate: jest.fn().mockReturnValue({
-      docs: [],
-      totalDocs: 317,
-      limit: 2,
-      totalPages: 32,
-      page: 1,
-      pagingCounter: 3,
-      hasPrevPage: false,
-      hasNextPage: true,
-      prevPage: 0,
-      nextPage: 2,
-      offset: 1,
+    find: jest.fn().mockReturnValue({
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      sort: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
     }),
   };
   const filter: QueryFilter = { blockHash: hash };
@@ -83,36 +67,36 @@ describe('Block Repository', () => {
   });
 
   it('should return blocks paginated', async () => {
-    const countSpy = jest.spyOn(mockBlockModel, 'count').mockResolvedValueOnce(317);
-    const spy = jest.spyOn(mockBlockModel, 'paginate');
+    const totalDocs = 317;
+    const countSpy = jest.spyOn(blockRepository, 'count').mockResolvedValueOnce(317);
+    const skipSpy = jest.spyOn(mockBlockModel.find(), 'skip');
+    const limitSpy = jest.spyOn(mockBlockModel.find(), 'limit');
+    const sortSpy = jest.spyOn(mockBlockModel.find(), 'sort');
+    const leanSpy = jest.spyOn(mockBlockModel.find(), 'lean').mockResolvedValueOnce(blockEntities);
 
     const result = await blockRepository.findPaginated(Object.assign(new BlockPaginationParams(), paginationParams));
-    expect(spy).toHaveBeenCalledWith({}, { ...paginationParams, sort: `-${paginationParams.sortColumn}`, lean: true });
-    expect(result).toMatchObject({ ...blockEntityPaginated, docs: [] });
-    expect(countSpy).toHaveBeenCalled();
+
+    expect(result.docs.length).toBe(blockEntities.length);
+    expect(result.totalDocs).toBe(totalDocs);
+    expect(skipSpy).toHaveBeenCalledWith(paginationParams.limit * (paginationParams.page - 1));
+    expect(limitSpy).toHaveBeenCalledWith(paginationParams.limit);
+    expect(sortSpy).toHaveBeenCalledWith(`-${paginationParams.sortColumn}`);
+    expect(leanSpy).toHaveBeenCalled();
+    expect(countSpy).toHaveBeenCalledWith({});
   });
 
   it('should include proposer in paginate query', async () => {
-    const spy = jest.spyOn(mockBlockModel, 'paginate');
+    const spy = jest.spyOn(mockBlockModel, 'find');
     const proposer = '0xcae0ed659d7821b59bbfd1b6b79260051e5e9111';
+    jest.spyOn(mockBlockModel.find(), 'lean').mockResolvedValueOnce(blockEntities);
 
     await blockRepository.findPaginated(Object.assign(new BlockPaginationParams(), { ...paginationParams, proposer }));
 
-    expect(spy).toHaveBeenCalledWith(
-      { [BlockSearchFields.PROPOSER]: proposer },
-      {
-        limit: paginationParams.limit,
-        sortDirection: paginationParams.sortDirection,
-        sortColumn: paginationParams.sortColumn,
-        page: paginationParams.page,
-        sort: `-${paginationParams.sortColumn}`,
-        lean: true,
-      }
-    );
+    expect(spy).toHaveBeenCalledWith({ [BlockSearchFields.PROPOSER]: proposer });
   });
 
   it('should change sort string in pagination if asc passed', async () => {
-    const spy = jest.spyOn(mockBlockModel, 'paginate');
+    const sortSpy = jest.spyOn(mockBlockModel.find(), 'sort');
 
     const params = new BlockPaginationParams();
     params.sortDirection = 'asc';
@@ -122,16 +106,6 @@ describe('Block Repository', () => {
 
     await blockRepository.findPaginated(params);
 
-    expect(spy).toHaveBeenCalledWith(
-      {},
-      {
-        limit: paginationParams.limit,
-        sortDirection: params.sortDirection,
-        sortColumn: paginationParams.sortColumn,
-        page: paginationParams.page,
-        sort: paginationParams.sortColumn,
-        lean: true,
-      }
-    );
+    expect(sortSpy).toHaveBeenCalledWith(params.sortColumn);
   });
 });

@@ -9,7 +9,6 @@ describe('Challenged Block Repository', () => {
   let mockChallengedBlockModel = {
     findOne: jest.fn(),
     count: jest.fn(),
-    paginate: jest.fn(),
   };
 
   beforeEach(async () => {

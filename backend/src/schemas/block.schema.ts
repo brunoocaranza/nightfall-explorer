@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Expose } from 'class-transformer';
 import { Document } from 'mongoose';
-import paginate from 'mongoose-paginate-v2';
 import { BaseSchema } from './base.schema';
 
 @Schema({ timestamps: false, versionKey: false })
@@ -56,6 +55,5 @@ export class BlockEntity extends BaseSchema {
 
 export type BlockDocument = BlockEntity & Document;
 export const BlockSchema = SchemaFactory.createForClass(BlockEntity);
-BlockSchema.plugin(paginate);
 
 export const BlockCollectionName = 'blocks';
