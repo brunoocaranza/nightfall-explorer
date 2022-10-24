@@ -51,6 +51,7 @@ import {
 } from './controllers';
 import { ProposerService } from './services/impl/proposer.service';
 import { HttpModule } from '@nestjs/axios';
+import { RedisModule } from '../../config/redis';
 
 const SERVICES = [
   {
@@ -130,7 +131,7 @@ const mongooseModule = MongooseModule.forFeature(
   DATABASE_CONNECTION_NAME
 );
 
-const IMPORTS = [mongooseModule, HttpModule];
+const IMPORTS = [mongooseModule, HttpModule, RedisModule];
 
 @Module({
   imports: [...IMPORTS],

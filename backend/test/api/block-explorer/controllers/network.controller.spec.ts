@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { NetworkController } from '../../../../src/api/block-explorer/controllers';
+import { REDIS_CLIENT } from '../../../../src/utils';
 
 describe('Network Controller', () => {
   let networkController: NetworkController;
@@ -31,6 +32,10 @@ describe('Network Controller', () => {
         {
           provide: HttpService,
           useValue: mockHttpService,
+        },
+        {
+          provide: REDIS_CLIENT,
+          useValue: {},
         },
       ],
     }).compile();
