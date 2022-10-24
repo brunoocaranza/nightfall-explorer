@@ -11,7 +11,7 @@ import {
   PaginationModel,
 } from '../../../../models';
 import { IBlockRepository, IChallengedBlockRepository } from '../../../../repositories';
-import { BlockSearchFields, HelperService, mapToClass, TransactionSearchFields } from '../../../../utils';
+import { BadBlocks, BlockSearchFields, HelperService, mapToClass, TransactionSearchFields } from '../../../../utils';
 import {
   BLOCK_REPOSITORY,
   BLOCK_SERVICE,
@@ -93,8 +93,11 @@ export class BlockService implements IBlockService {
   async findPaginated(paginationParams: BlockPaginationParams): Promise<PaginationModel<BlockItemDTO>> {
     let blocks;
 
-    // badBlocks flag indicates that challenged blocks should be fetched
-    if (paginationParams.badBlocks) {
+    // We have to set prototype because at repository level type of pagination params are determined using instance of
+    Object.setPrototypeOf(paginationParams, new BlockPaginationParams());
+
+    // badBlocks flag indicates which blocks should be fetched (challenged or good blocks)
+    if (paginationParams.badBlocks === BadBlocks.SHOW_BAD) {
       delete paginationParams.badBlocks; // Remove badBlocks flag because it's not field nor filter param
       blocks = await this._challengedBlockRepo.findPaginated(paginationParams);
     } else blocks = await this._blockRepo.findPaginated(paginationParams);
