@@ -10,6 +10,7 @@ import { useSearchParams } from "react-router-dom";
 import { getQueryParam } from "../../app/utils/helpers";
 import { useProposerListQuery } from "../../app/query/proposer/useProposerListQuery";
 import IconArrowDownBold from "jsx:../../assets/images/icons/arrow-down-bold.svg";
+import { BAD_BLOCKS, GOOD_BLOCKS, ISortDirectionProposer, SortByProposerTypes } from "../../app/consts/sort";
 
 import "./ChallengedBlockProposers.scss";
 
@@ -20,7 +21,12 @@ const ChallengedBlockProposers = () => {
 
     const page = getQueryParam(searchParams, "page", "1");
     const direction = getQueryParam(searchParams, "direction", "desc");
-    const column = getQueryParam(searchParams, "column", "goodBlocks");
+    const column = getQueryParam(searchParams, "column", GOOD_BLOCKS);
+
+    const [sortDirection, setSortDirection] = useState<ISortDirectionProposer>({
+        [GOOD_BLOCKS]: column === GOOD_BLOCKS ? direction : "desc",
+        [BAD_BLOCKS]: column === BAD_BLOCKS ? direction : "desc",
+    });
 
     const [proposer, setProposer] = useState([]);
 
@@ -37,8 +43,12 @@ const ChallengedBlockProposers = () => {
         setSearchParams({ page: String(selected + 1), direction, column });
     };
 
-    const sortBy = (sortName: string) => {
-        setSearchParams({ page, direction: direction === "asc" ? "desc" : "asc", column: sortName });
+    const sortBy = (sortName: SortByProposerTypes) => {
+        const newSortDirection = sortDirection[sortName] === "asc" ? "desc" : "asc";
+
+        setSortDirection({ ...sortDirection, [sortName]: newSortDirection });
+
+        setSearchParams({ page, direction: newSortDirection, column: sortName });
     };
 
     return (
@@ -64,19 +74,19 @@ const ChallengedBlockProposers = () => {
                         <tr>
                             <th>{t("#")}</th>
                             <th>{t("Proposer Address")}</th>
-                            <th onClick={() => sortBy("goodBlocks")} className="cursor-pointer">
+                            <th onClick={() => sortBy(GOOD_BLOCKS)} className="cursor-pointer">
                                 {t("Good Blocks")}
                                 <IconArrowDownBold
                                     className={classNames("inline align-baseline ml-2", {
-                                        "rotate-180": direction === "desc",
+                                        "rotate-180": sortDirection[GOOD_BLOCKS] === "desc",
                                     })}
                                 />
                             </th>
-                            <th onClick={() => sortBy("badBlocks")} className="cursor-pointer">
+                            <th onClick={() => sortBy(BAD_BLOCKS)} className="cursor-pointer">
                                 {t("Bad Blocks")}
                                 <IconArrowDownBold
                                     className={classNames("inline align-baseline ml-2", {
-                                        "rotate-180": direction === "desc",
+                                        "rotate-180": sortDirection[BAD_BLOCKS] === "desc",
                                     })}
                                 />
                             </th>

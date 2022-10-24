@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import i18next from "i18next";
 import { Helmet } from "react-helmet-async";
 import { env } from "../../app/utils/helpers";
