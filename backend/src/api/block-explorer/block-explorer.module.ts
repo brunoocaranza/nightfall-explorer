@@ -51,7 +51,6 @@ import {
 } from './controllers';
 import { ProposerService } from './services/impl/proposer.service';
 import { HttpModule } from '@nestjs/axios';
-import { RedisModule } from '../../config/redis';
 
 const SERVICES = [
   {
