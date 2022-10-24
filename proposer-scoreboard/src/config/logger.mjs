@@ -1,7 +1,5 @@
 import * as winston from "winston";
-import WinstonCloudwatch from "winston-cloudwatch";
 import { loggerEnv, server } from "./constants.mjs";
-import { v4 as uuidv4 } from "uuid";
 
 const LogLevels = {
   INFO: "info",
@@ -30,19 +28,16 @@ const consoleTransport = new winston.transports.Console({
   ),
 });
 
-const cloudWatchTransport = (env) => {
-  return new WinstonCloudwatch({
-    name: `Nighfall explorer logs - ${env}`,
-    logGroupName: `${loggerEnv.groupName}`,
-    logStreamName: uuidv4(),
-    messageFormatter: (item) => {
-      return ` [${item.level}] ${item.message}`;
-    },
-    errorHandler: (err) => {
-      console.error("Cloud watch error: ", err);
-    },
-  });
-};
+const cloudTransport = new winston.transports.Console({
+  format: winston.format.combine(
+    winston.format.timestamp({
+      format: "YYYY-MM-DD HH:mm:ss",
+    }),
+    winston.format.printf((info) => {
+      return `${info.timestamp} [${info.level}] ${info.message}`;
+    })
+  ),
+});
 
 const createLogger = () => {
   const env = server.env;
@@ -54,7 +49,7 @@ const createLogger = () => {
   });
 
   if (env !== "local") {
-    loggerInstance.add(cloudWatchTransport(env));
+    loggerInstance.add(cloudTransport);
   } else loggerInstance.add(consoleTransport);
 };
 
