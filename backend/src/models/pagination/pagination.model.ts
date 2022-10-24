@@ -32,8 +32,8 @@ export class PaginationBuilder<T> extends PaginationModel<T> {
     return this;
   }
 
-  setDocs(allItems: T[]) {
-    this.docs = allItems.slice((this.page - 1) * this.limit, this.page * this.limit);
+  setDocs(docs: T[]) {
+    this.docs = docs;
     return this;
   }
 

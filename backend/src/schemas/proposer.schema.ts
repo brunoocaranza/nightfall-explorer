@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Expose } from 'class-transformer';
 import mongoose, { Document } from 'mongoose';
 import { BaseSchema } from './base.schema';
-import paginate from 'mongoose-paginate-v2';
 
 type BigNumber = {
   _hex: string;
@@ -47,6 +46,5 @@ export class ProposerEntity extends BaseSchema {
 
 export type ProposerDocument = ProposerEntity & Document;
 export const ProposerSchema = SchemaFactory.createForClass(ProposerEntity);
-ProposerSchema.plugin(paginate);
 
 export const ProposerCollectionName = 'proposers-scoreboard';

@@ -5,6 +5,7 @@ import {
   QueryFilter,
   PaginationModel,
   ProposerPaginationParams,
+  PaginationBuilder,
 } from '../../models';
 import { BlockSearchFields, ProposerSearchFields, Resources } from '../../utils';
 import { ResourceNotFoundException } from '../../utils/exceptions';
@@ -32,7 +33,9 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
     const sortString =
       paginationParams.sortDirection === 'asc' ? paginationParams.sortColumn : `-${paginationParams.sortColumn}`;
 
+    const skipValue = paginationParams.limit * (paginationParams.page - 1);
     const query: QueryFilter = {};
+    const countQuery: QueryFilter = {};
 
     if (paginationParams instanceof BlockPaginationParams) {
       // Pickup default values
@@ -41,21 +44,42 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
       // For now only filter is block's proposer. If something new comes make this more dynamic
       if ((paginationParams as BlockPaginationParams).proposer) {
         query[BlockSearchFields.PROPOSER] = (paginationParams as BlockPaginationParams).proposer;
+        countQuery[BlockSearchFields.PROPOSER] = (paginationParams as BlockPaginationParams).proposer;
         delete (paginationParams as BlockPaginationParams).proposer;
       }
     } else {
       // Pickup default values
       paginationParams = Object.assign(new ProposerPaginationParams(), paginationParams);
       query[ProposerSearchFields.IS_ACTIVE] = true;
+      countQuery[ProposerSearchFields.IS_ACTIVE] = true;
 
       if ((paginationParams as ProposerPaginationParams).address) {
         // Address field will have list of addresses devided by ,
         const addresses = (paginationParams as ProposerPaginationParams).address.split(',');
         query[ProposerSearchFields.ADDRESS] = { $in: addresses };
+        countQuery[ProposerSearchFields.ADDRESS] = { $in: addresses };
       }
     }
 
-    return this._model.paginate(query, { ...paginationParams, sort: sortString, lean: true });
+    const totalDocs = await this.count(countQuery);
+    const docs = (await this._model
+      .find(query)
+      .skip(skipValue)
+      .limit(paginationParams.limit)
+      .sort(sortString)
+      .lean()) as T[];
+
+    return new PaginationBuilder<T>()
+      .setLimit(Number(paginationParams.limit))
+      .setPage(Number(paginationParams.page))
+      .setTotalDocs(totalDocs)
+      .setTotalPages()
+      .setDocs(docs)
+      .setHasPrevPage()
+      .setPrevPage()
+      .setHasNextPage()
+      .setNextPage()
+      .setPagingCounter();
   }
 
   /**

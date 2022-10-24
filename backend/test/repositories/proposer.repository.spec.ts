@@ -3,23 +3,16 @@ import { Test } from '@nestjs/testing';
 import { ProposerPaginationParams } from '../../src/models';
 import { ProposerRepository } from '../../src/repositories';
 import { ProposerEntity } from '../../src/schemas';
-import { DATABASE_CONNECTION_NAME } from '../../src/utils';
+import { DATABASE_CONNECTION_NAME, ProposerSearchFields } from '../../src/utils';
 
 describe('Proposer Repository', () => {
   let proposerRepository: ProposerRepository;
   let mockProposerModel = {
-    paginate: jest.fn().mockReturnValue({
-      docs: [],
-      totalDocs: 4,
-      limit: 2,
-      totalPages: 2,
-      page: 1,
-      pagingCounter: 1,
-      hasPrevPage: false,
-      hasNextPage: true,
-      prevPage: 0,
-      nextPage: 2,
-      offset: 1,
+    find: jest.fn().mockReturnValue({
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      sort: jest.fn().mockReturnThis(),
+      lean: jest.fn().mockReturnThis(),
     }),
   };
 
@@ -42,7 +35,8 @@ describe('Proposer Repository', () => {
   });
 
   it('should find proposers paginated', async () => {
-    const spy = jest.spyOn(mockProposerModel, 'paginate');
+    const countSpy = jest.spyOn(proposerRepository, 'count').mockResolvedValueOnce(317);
+    const spy = jest.spyOn(mockProposerModel, 'find');
 
     const params = new ProposerPaginationParams();
     params.sortDirection = 'asc';
@@ -52,21 +46,13 @@ describe('Proposer Repository', () => {
 
     await proposerRepository.findPaginated(params);
 
-    expect(spy).toHaveBeenCalledWith(
-      { isActive: true },
-      {
-        limit: params.limit,
-        sortDirection: params.sortDirection,
-        sortColumn: params.sortColumn,
-        page: params.page,
-        sort: params.sortColumn,
-        lean: true,
-      }
-    );
+    expect(spy).toHaveBeenCalledWith({ isActive: true });
+    expect(countSpy).toHaveBeenCalledWith({ isActive: true });
   });
 
   it('should should include address in query', async () => {
-    const spy = jest.spyOn(mockProposerModel, 'paginate');
+    const countSpy = jest.spyOn(proposerRepository, 'count').mockResolvedValueOnce(317);
+    const spy = jest.spyOn(mockProposerModel, 'find');
 
     const params = new ProposerPaginationParams();
     params.sortDirection = 'asc';
@@ -77,6 +63,10 @@ describe('Proposer Repository', () => {
 
     await proposerRepository.findPaginated(params);
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith({ isActive: true, [ProposerSearchFields.ADDRESS]: { $in: [params.address] } });
+    expect(countSpy).toHaveBeenCalledWith({
+      isActive: true,
+      [ProposerSearchFields.ADDRESS]: { $in: [params.address] },
+    });
   });
 });
