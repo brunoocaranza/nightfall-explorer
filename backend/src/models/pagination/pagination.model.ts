@@ -28,7 +28,7 @@ export class PaginationBuilder<T> extends PaginationModel<T> {
   }
 
   setTotalPages() {
-    this.totalPages = Math.round(this.totalDocs / this.limit);
+    this.totalPages = Math.ceil(this.totalDocs / this.limit);
     return this;
   }
 
