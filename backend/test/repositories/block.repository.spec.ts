@@ -12,7 +12,15 @@ describe('Block Repository', () => {
   let mockBlockModel = {
     findOne: jest.fn(),
     count: jest.fn(),
-    find: jest.fn(),
+    find: jest.fn(() => {
+      skip: jest.fn(() => {
+        limit: jest.fn(() => {
+          sort: jest.fn(() => {
+            lean: jest.fn(() => {});
+          });
+        });
+      });
+    }),
     paginate: jest.fn().mockReturnValue({
       docs: [],
       totalDocs: 317,
@@ -75,11 +83,13 @@ describe('Block Repository', () => {
   });
 
   it('should return blocks paginated', async () => {
+    const countSpy = jest.spyOn(mockBlockModel, 'count').mockResolvedValueOnce(317);
     const spy = jest.spyOn(mockBlockModel, 'paginate');
 
     const result = await blockRepository.findPaginated(Object.assign(new BlockPaginationParams(), paginationParams));
     expect(spy).toHaveBeenCalledWith({}, { ...paginationParams, sort: `-${paginationParams.sortColumn}`, lean: true });
     expect(result).toMatchObject({ ...blockEntityPaginated, docs: [] });
+    expect(countSpy).toHaveBeenCalled();
   });
 
   it('should include proposer in paginate query', async () => {
