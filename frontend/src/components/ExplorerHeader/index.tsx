@@ -9,6 +9,7 @@ import IconAvgBlockCreation from "jsx:../../assets/images/icons/avg-block-creati
 import { useStatsPendingTransaction } from "../../app/query/stats/useStatsPendingTransactionQuery";
 
 import "./ExplorerHeader.scss";
+import { IStatsBlockResponse, IStatsTransactionResponse } from "../../app/consts/stats";
 
 const ExplorerHeader = () => {
     const { t } = useTranslation();
@@ -26,9 +27,9 @@ const ExplorerHeader = () => {
         return <div className="w-10 h-7 animate-pulse opacity-50 inline-block bg-gray-100 mx-auto"></div>;
     };
 
-    const renderValue = (isLoading: boolean, isError: boolean, value: any) => {
+    const renderValue = (isLoading: boolean, isError: boolean, value: string | IStatsTransactionResponse | IStatsBlockResponse | undefined) => {
         if (isLoading) return renderLoading();
-        if (isError) return <>N/A</>;
+        if (isError) return <>{t("N/A")}</>;
 
         return <>{value}</>;
     };

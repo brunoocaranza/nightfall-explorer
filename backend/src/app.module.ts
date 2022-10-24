@@ -1,13 +1,14 @@
-import { CacheModule, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigModuleOptions } from '@nestjs/config';
 import { BlockExplorerModule } from './api/block-explorer/block-explorer.module';
 import { HealthModule } from './api/health/health.module';
 import appConfiguration from './config/app.config';
 import { DatabaseModule } from './config/database';
 import { RequestMiddleware, SearchMiddleware } from './middlewares';
+import { ScheduleModule } from '@nestjs/schedule';
+import { RedisModule } from './config/redis';
 import { APP_GUARD } from '@nestjs/core';
 import { RateLimiterGuard } from './guards';
-import { ScheduleModule } from '@nestjs/schedule';
 
 const envConfig = () => {
   const option: ConfigModuleOptions = {
@@ -26,7 +27,7 @@ const envConfig = () => {
 const MODULES = [
   ConfigModule.forRoot(envConfig()),
   DatabaseModule,
-  CacheModule.register(),
+  RedisModule,
   ScheduleModule.forRoot(),
   HealthModule,
   BlockExplorerModule,

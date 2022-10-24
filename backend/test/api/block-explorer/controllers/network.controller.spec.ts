@@ -1,8 +1,8 @@
 import { HttpService } from '@nestjs/axios';
-import { CACHE_MANAGER } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { NetworkController } from '../../../../src/api/block-explorer/controllers';
+import { REDIS_CLIENT } from '../../../../src/utils';
 
 describe('Network Controller', () => {
   let networkController: NetworkController;
@@ -34,7 +34,7 @@ describe('Network Controller', () => {
           useValue: mockHttpService,
         },
         {
-          provide: CACHE_MANAGER,
+          provide: REDIS_CLIENT,
           useValue: {},
         },
       ],

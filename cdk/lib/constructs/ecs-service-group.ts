@@ -68,6 +68,7 @@ export class ECSServiceGroup extends Construct {
     });
     const { service, repository } = fargateService;
 
+    //Repo containing images for node and nginx
     const baseRepo = Repository.fromRepositoryName(
       this,
       `${serviceConfig.hostname}-node-repo`,
@@ -85,6 +86,7 @@ export class ECSServiceGroup extends Construct {
       gitOwner: explorer.git.owner,
       gitBranch: explorer.git.branch,
       gitTokenSecretPath: explorer.git.token,
+      gitRepository: explorer.git.repository,
     });
 
     const { cloudfront } = serviceConfig;

@@ -1,16 +1,19 @@
 import { HttpService } from '@nestjs/axios';
-import { CACHE_MANAGER, Controller, Get, Inject, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Get, Inject, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
-import { Cache } from 'cache-manager';
+import Redis from 'ioredis';
+import { REDIS_CLIENT } from '../../../utils';
+
 @ApiTags('network')
 @Controller('/health')
 export class NetworkController {
   constructor(
     private readonly _config: ConfigService,
     private readonly _http: HttpService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache
+    @Inject(REDIS_CLIENT) private readonly redisClient: Redis
   ) {}
+
   /**
    * Used from frontend to check if this service is up and running
    * @returns
@@ -38,12 +41,14 @@ export class NetworkController {
   @Get('/ratelimiter/test')
   /* istanbul ignore next */
   async rateLimit(): Promise<any> {
-    const keys = await this.cacheManager.store.keys();
-    //Loop through keys and get data
-    const allData: { [key: string]: any } = {};
+    const result = [];
+    const keys = await this.redisClient.keys('*');
     for (const key of keys) {
-      allData[`${key}`] = await this.cacheManager.get(key);
+      const record = await this.redisClient.get(key);
+      const remainingTtl = await this.redisClient.ttl(key);
+      result.push({ ip: key, record: JSON.parse(record), ttlExipre: remainingTtl });
     }
-    return allData;
+
+    return result;
   }
 }

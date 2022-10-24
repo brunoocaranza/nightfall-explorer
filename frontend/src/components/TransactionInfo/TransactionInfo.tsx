@@ -29,26 +29,64 @@ const TransactionInfo = ({ transaction }: ITransactionInfoProps) => {
 
     return (
         <ItemInfo>
-            <InfoParam title={t("Transaction Hash")} value={transaction.transactionHash} allowCopy />
-            <InfoParam title={t("Block Number")} value={transaction.blockNumberL2} />
-            <InfoParam title={t("Timestamp")} value={convertTimestampToUTC(transaction.timeBlockL2)} />
-            <InfoParam title={t("Fee")} value={transaction.fee} />
-            {showAmount && <InfoParam title={t("Amount")} value={transaction.amount} sufix={"WEI"} />}
-            {showRecipientAddress && <InfoParam title={t("Recipient Address")} value={transaction.recipientAddress} />}
+            <InfoParam
+                title={t("Transaction Hash")}
+                titleInfo={t("Polygon Nightfall Transaction hash of the transaction")}
+                value={transaction.transactionHash}
+                allowCopy
+            />
+            <InfoParam title={t("Block Number")} titleInfo={t("Polygon Nightfall block number")} value={transaction.blockNumberL2} />
+            <InfoParam
+                title={t("Timestamp")}
+                titleInfo={t("Timestamp of the Polygon Nightfall block where the transaction is included")}
+                value={convertTimestampToUTC(transaction.timeBlockL2)}
+            />
+            <InfoParam title={t("Fee")} titleInfo={t("Fee for the proposer")} value={transaction.fee} />
+            {showAmount && (
+                <InfoParam
+                    title={t("Amount")}
+                    titleInfo={t("Amount of token transferred in the transaction")}
+                    value={transaction.amount}
+                    sufix={"WEI"}
+                />
+            )}
+            {showRecipientAddress && (
+                <InfoParam
+                    title={t("Recipient Address")}
+                    titleInfo={t("Ethereum address of the Layer 1 token recipient")}
+                    value={transaction.recipientAddress}
+                />
+            )}
             <InfoParam title={t("Token Type")} value={TokenNames[transaction.tokenType]} />
-            <InfoParam title={t("Token ID")} value={transaction.tokenId} allowCopy />
+            <InfoParam title={t("Token ID")} titleInfo={t("Token ID for ERC721 and ERC1155")} value={transaction.tokenId} allowCopy />
             {transaction.hasEthScanLink && <InfoParam prefix={<IconEtherscan />} linkUrl={getEtherScanLink()} linkText={t("View on Etherscan")} />}
 
             {showMore && (
                 <>
                     <InfoParam title={t("ETH Transaction Hash")} value={transaction.transactionHashL1} allowCopy={isOffchain} />
                     <InfoParam title={t("ETH Block Number")} value={transaction.blockNumber} />
-                    <InfoParam title={t("Compressed Secrets")} value={transaction.compressedSecrets} allowCopy />
-                    <InfoParam title={t("ERC Address")} value={transaction.ercAddress} allowCopy />
+                    <InfoParam
+                        title={t("Compressed Secrets")}
+                        titleInfo={t(
+                            "Secrets that only the owner of the spendable commitments could be able to decrypt in order to have the private information"
+                        )}
+                        value={transaction.compressedSecrets}
+                        allowCopy
+                    />
+                    <InfoParam title={t("ERC Address")} titleInfo={t("Address of the ERC contract")} value={transaction.ercAddress} allowCopy />
                     <InfoParam title={t("Historic Root Block Number L2")} value={transaction.historicRootBlockNumberL2} allowCopy />
-                    <InfoParam title={t("Mempool")} value={transaction.mempool.toString()} />
-                    <InfoParam title={t("Nullifiers")} value={transaction.nullifiers} allowCopy />
-                    <InfoParam title={t("Proof")} value={transaction.proof} allowCopy />
+                    <InfoParam
+                        title={t("Mempool")}
+                        titleInfo={t("Indicates if the transaction is in the mempool (true) or already in a block on-chain (false)")}
+                        value={transaction.mempool.toString()}
+                    />
+                    <InfoParam title={t("Nullifiers")} titleInfo={t("Nullifiers for spended commitments")} value={transaction.nullifiers} allowCopy />
+                    <InfoParam
+                        title={t("Proof")}
+                        titleInfo={t("proof for the verification of the correctness of the transaction")}
+                        value={transaction.proof}
+                        allowCopy
+                    />
                 </>
             )}
             <ShowMoreButton value={showMore} className="ml-4 xl:ml-0" onClick={() => setShowMore(!showMore)} />

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import classNames from "classnames";
@@ -8,10 +9,9 @@ import BlockSwitch from "../Swich/BlockSwitch";
 import TableBlocks from "../TableBlocks";
 import { Pagination } from "../Pagination";
 import IconArrowDownBold from "jsx:../../assets/images/icons/arrow-down-bold.svg";
+import { BLOCK_NUMBER_L2, ISortDirection, SortByTypes, TIME_BLOCK_L2 } from "../../app/consts/sort";
 
 import "./ProposerBlocks.scss";
-import { useState } from "react";
-import { BLOCK_NUMBER_L2, ISortDirection, SortByTypes, TIME_BLOCK_L2 } from "../../app/consts/sort";
 
 interface IProposerBlocksProps {
     proposer: string;

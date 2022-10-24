@@ -9,8 +9,8 @@ const SearchNotFound = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="container mx-auto py-32 max-w-7xl w-11/12 xl:w-full">
-            <div>
+        <div className="container mx-auto max-w-7xl w-11/12 xl:w-full">
+            <div className="py-32 md:h-[calc(100vh-200px)]">
                 <p className="text-primary-500 mb-4">{t("Sorry")} </p>
 
                 <div className="max-w-xl mb-10">

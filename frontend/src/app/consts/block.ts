@@ -2,7 +2,7 @@ import { ITransaction } from "./transactions";
 
 export interface ILatestBlock {
     blockNumberL2: number;
-    blockHash: "string";
+    blockHash: string;
     timeBlockL2: string;
     numberOfTransactions: number;
     proposer: string;

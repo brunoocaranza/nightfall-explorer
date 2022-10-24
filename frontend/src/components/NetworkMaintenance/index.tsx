@@ -19,7 +19,7 @@ const NetworkMaintenance = () => {
                 <div className="bg-white py-6">
                     <div className="container flex flex-row mx-auto justify-between max-w-7xl text-sm">
                         <div className="flex">
-                            <IconInfo className="mr-5" />
+                            <IconInfo className="w-4 mr-5 fill-blue-500" />
                             <div>
                                 <h4 className="font-bold mb-2">{t("Network is currently under maintenance")}</h4>
                                 <p>

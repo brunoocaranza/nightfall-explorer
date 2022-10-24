@@ -13,9 +13,9 @@ const ChallengedHeader = () => {
         return <div className="w-10 h-7 animate-pulse opacity-50 inline-block bg-gray-100 mx-auto"></div>;
     };
 
-    const renderValue = (isLoading: boolean, isError: boolean, value: any) => {
+    const renderValue = (isLoading: boolean, isError: boolean, value: string | number) => {
         if (isLoading) return renderLoading();
-        if (isError) return <>N/A</>;
+        if (isError) return <>{t("N/A")}</>;
 
         return <>{value}</>;
     };
@@ -30,7 +30,7 @@ const ChallengedHeader = () => {
                         </div>
                         <div className="px-2">
                             <h3 className="text-4xl font-black">
-                                {renderValue(isLoadingBlock, isErrorBlock, blocks ? `${blocks.blockPercentage} %` : "N/A")}
+                                {renderValue(isLoadingBlock, isErrorBlock, blocks ? `${blocks.blockPercentage} %` : t("N/A"))}
                             </h3>
                             <p className="text-sm">{t("% of challenged blocks")}</p>
                         </div>
@@ -42,7 +42,7 @@ const ChallengedHeader = () => {
                         </div>
                         <div className="px-2">
                             <h3 className="text-4xl font-black">
-                                {renderValue(isLoadingBlock, isErrorBlock, blocks ? `${blocks.blocksCount}` : "N/A")}
+                                {renderValue(isLoadingBlock, isErrorBlock, blocks ? `${blocks.blocksCount}` : t("N/A"))}
                             </h3>
                             <p className="text-sm">{t("number of challenged blocks")}</p>
                         </div>

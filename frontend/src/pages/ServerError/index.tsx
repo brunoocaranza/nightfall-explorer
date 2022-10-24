@@ -18,13 +18,7 @@ const ServerError = () => {
             message: t("Sorry, we are trying to resolve problem, try again in few minutes."),
         };
 
-        if (status === "0") {
-            content = {
-                title: t("CORS"),
-                subtitle: t("We have problem with CORS policy..."),
-                message: t("Sorry, we are trying to resolve problem, try again in few minutes."),
-            };
-        } else if (status === "429") {
+        if (status === "429") {
             content = {
                 title: t("Too many requests"),
                 subtitle: t("You made a lot of requests :("),
@@ -35,8 +29,8 @@ const ServerError = () => {
         const { title, subtitle, message } = content;
 
         return (
-            <div className="container mx-auto py-32 max-w-7xl w-11/12 md:h-[calc(100vh-200px)] xl:w-full">
-                <div>
+            <div className="container mx-auto max-w-7xl w-11/12 xl:w-full">
+                <div className="py-32 md:h-[calc(100vh-200px)]">
                     <p className="text-primary-500 mb-4">{title}</p>
 
                     <div className="max-w-xl mb-10">

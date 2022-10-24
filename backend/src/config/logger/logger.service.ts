@@ -1,8 +1,6 @@
 import { Injectable, LoggerService } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as winston from 'winston';
-import WinstonCloudwatch, { LogObject } from 'winston-cloudwatch';
-import { v4 as uuidv4 } from 'uuid';
 
 enum LogLevels {
   INFO = 'info',
@@ -31,19 +29,16 @@ const consoleTransport = new winston.transports.Console({
   ),
 });
 
-const cloudWatchTransport = (env: string, configService: ConfigService) => {
-  return new WinstonCloudwatch({
-    name: `Nighfall explorer logs - ${env}`,
-    logGroupName: `${configService.get('cloudWatch.groupName')}`,
-    logStreamName: `${uuidv4()}`,
-    messageFormatter: (item: LogObject) => {
-      return ` [${item.level}]:  [${item.context}] ${item.message}`;
-    },
-    errorHandler: (err) => {
-      console.error('Cloud watch error: ', err);
-    },
-  });
-};
+const cloudTransport = new winston.transports.Console({
+  format: winston.format.combine(
+    winston.format.timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss',
+    }),
+    winston.format.printf((info) => {
+      return `${info.timestamp} [${info.level}] [${info.context}] ${info.message}`;
+    })
+  ),
+});
 
 @Injectable()
 export class Logger implements LoggerService {
@@ -59,7 +54,7 @@ export class Logger implements LoggerService {
     });
 
     if (env !== 'local') {
-      this.logger.add(cloudWatchTransport(env, configService));
+      this.logger.add(cloudTransport);
     } else this.logger.add(consoleTransport);
   }
 

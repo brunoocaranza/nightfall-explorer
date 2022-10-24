@@ -4,9 +4,11 @@ import classNames from "classnames";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Tooltip from "../Tooltip";
 import IconCopy from "jsx:../../assets/images/icons/copy.svg";
+import IconInfo from "jsx:../../assets/images/icons/info.svg";
 
 interface IInfoParamProps {
     title?: string;
+    titleInfo?: string;
     value?: string | number | Array<string>;
     valueInfo?: string;
     linkUrl?: string;
@@ -17,7 +19,7 @@ interface IInfoParamProps {
     sufix?: string;
 }
 
-const InfoParam = ({ title, value, linkUrl, linkText, allowCopy, prefix, sufix, valueInfo }: IInfoParamProps) => {
+const InfoParam = ({ title, titleInfo, value, linkUrl, linkText, allowCopy, prefix, sufix, valueInfo }: IInfoParamProps) => {
     const { t } = useTranslation();
     const [copyTitle, setCopyTitle] = useState<string>(t("Copy address to clipboard"));
 
@@ -47,7 +49,14 @@ const InfoParam = ({ title, value, linkUrl, linkText, allowCopy, prefix, sufix, 
 
     return (
         <div className="flex flex-col lg:flex-row justify-between relative border-b border-gray-100 py-8 px-5">
-            <div className="font-light">{title}</div>
+            <div className="font-light flex items-center">
+                {title}
+                {titleInfo && (
+                    <Tooltip message={titleInfo} position="right">
+                        <IconInfo className="ml-2 w-4 fill-gray-700" />
+                    </Tooltip>
+                )}
+            </div>
 
             <div>
                 <div
@@ -61,7 +70,7 @@ const InfoParam = ({ title, value, linkUrl, linkText, allowCopy, prefix, sufix, 
                     {allowCopy && (
                         <CopyToClipboard text={String(value)} onCopy={() => copied()}>
                             <div>
-                                <Tooltip message={copyTitle}>
+                                <Tooltip message={copyTitle} position="left">
                                     <IconCopy className="ml-2 mb-1.5" />
                                 </Tooltip>
                             </div>
