@@ -131,7 +131,7 @@ const mongooseModule = MongooseModule.forFeature(
   DATABASE_CONNECTION_NAME
 );
 
-const IMPORTS = [mongooseModule, HttpModule, RedisModule];
+const IMPORTS = [mongooseModule, HttpModule];
 
 @Module({
   imports: [...IMPORTS],
