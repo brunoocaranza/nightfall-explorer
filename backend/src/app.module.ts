@@ -1,4 +1,4 @@
-import { CacheModule, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigModuleOptions } from '@nestjs/config';
 import { BlockExplorerModule } from './api/block-explorer/block-explorer.module';
 import { HealthModule } from './api/health/health.module';
@@ -24,7 +24,6 @@ const envConfig = () => {
 const MODULES = [
   ConfigModule.forRoot(envConfig()),
   DatabaseModule,
-  CacheModule.register(),
   ScheduleModule.forRoot(),
   HealthModule,
   BlockExplorerModule,

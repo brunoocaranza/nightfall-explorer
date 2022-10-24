@@ -1,5 +1,4 @@
 import { HttpService } from '@nestjs/axios';
-import { CACHE_MANAGER } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { NetworkController } from '../../../../src/api/block-explorer/controllers';
@@ -32,10 +31,6 @@ describe('Network Controller', () => {
         {
           provide: HttpService,
           useValue: mockHttpService,
-        },
-        {
-          provide: CACHE_MANAGER,
-          useValue: {},
         },
       ],
     }).compile();
