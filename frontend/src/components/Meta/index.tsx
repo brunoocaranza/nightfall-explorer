@@ -36,7 +36,7 @@ const Meta = ({ children }: ChildrenProp) => {
     return (
         <>
             {helmet()}
-            {children}
+            <div className="flex flex-col h-screen justify-between">{children}</div>
         </>
     );
 };
