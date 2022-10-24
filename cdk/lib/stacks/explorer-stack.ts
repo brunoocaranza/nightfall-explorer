@@ -55,6 +55,7 @@ export class ExplorerStack extends cdk.Stack {
       }
     );
 
+    // Permissions for cloudwatch logs
     const cloudWatchPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       actions: [
