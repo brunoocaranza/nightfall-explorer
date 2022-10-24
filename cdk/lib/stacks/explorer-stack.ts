@@ -12,6 +12,7 @@ import {
 import { DnsAndCertificateConstruct } from "../constructs/dns-certificate-construct";
 import { VpcConstruct } from "../constructs/vpc-construct";
 import { ECSServiceGroup } from "../constructs/ecs-service-group";
+import { RedisConstruct } from "../constructs/elastic-cache";
 /**
  * This stack is responsible for creating the infrastructure for the ECS services.
  */
@@ -34,6 +35,22 @@ export class ExplorerStack extends cdk.Stack {
       }
     );
     const { vpc } = vpcConstruct;
+
+    const redisCluster = new RedisConstruct(this, "RedisCluster", {
+      vpc,
+    });
+
+    // add redis cluster endpoint to the explorer config
+    explorerApi.env = {
+      ...explorerApi.env,
+      REDIS_HOST: redisCluster.redisEndpoint,
+      REDIS_PORT: redisCluster.redisPort,
+    };
+    explorerApiPrivate.env = {
+      ...explorerApiPrivate.env,
+      REDIS_HOST: redisCluster.redisEndpoint,
+      REDIS_PORT: redisCluster.redisPort,
+    };
 
     //ECS CLUSTER
     const cluster = new ecs.Cluster(
