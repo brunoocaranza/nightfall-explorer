@@ -112,6 +112,9 @@ export class ExplorerStack extends cdk.Stack {
       Faragate Service Configuration
     */
     const fargateServices = [explorerApi, frontend, syncService]; // fargate service configurations
+    explorerApiPrivate.hostname
+      ? fargateServices.push(explorerApiPrivate)
+      : null;
     fargateServices.forEach((serviceConfig) => {
       new ECSServiceGroup(this, `${serviceConfig.hostname}`, {
         cluster,

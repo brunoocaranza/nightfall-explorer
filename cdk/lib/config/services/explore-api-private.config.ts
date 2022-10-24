@@ -1,6 +1,7 @@
 import { ServiceConfig } from "../iconfig";
 
 export const explorerApiPrivate: ServiceConfig = {
+  projectFolderName: "backend",
   hostname: process.env.API_PRIVATE_HOSTNAME || "",
   port: process.env.API_PRIVATE_TARGET_PORT
     ? +process.env.API_PRIVATE_TARGET_PORT
@@ -36,11 +37,8 @@ export const explorerApiPrivate: ServiceConfig = {
     },
   },
   ecr: {
-    repositoryName: process.env.API_REPOSITORY!,
+    repositoryName: process.env.API_ECR_REPOSITORY!,
     tag: "latest",
-  },
-  git: {
-    repository: process.env.API_REPOSITORY!,
   },
   env: {
     NODE_ENV: "Private",

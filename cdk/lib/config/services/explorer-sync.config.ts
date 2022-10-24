@@ -1,6 +1,7 @@
 import { ServiceConfig } from "../iconfig";
 
 export const syncService: ServiceConfig = {
+  projectFolderName: "proposer-scoreboard",
   hostname: process.env.SYNC_HOSTNAME || "sync",
   port: 80,
   privateNode: true,
@@ -17,11 +18,8 @@ export const syncService: ServiceConfig = {
     },
   },
   ecr: {
-    repositoryName: process.env.SYNC_REPOSITORY!,
+    repositoryName: process.env.SYNC_ECR_REPOSITORY!,
     tag: "latest",
-  },
-  git: {
-    repository: process.env.SYNC_REPOSITORY!,
   },
   env: {
     NODE_ENV: process.env.ENV_NAME,
