@@ -9,6 +9,7 @@ import {
   Protocol,
   FargateService,
   ICluster,
+  AwsLogDriver,
 } from "aws-cdk-lib/aws-ecs";
 import { PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
@@ -54,6 +55,11 @@ export class FargateServiceConstruct extends Construct {
       removalPolicy: RemovalPolicy.DESTROY,
       retention: RetentionDays.ONE_WEEK,
       logGroupName: `${serviceConfig.logGroup}-${envName}`,
+    });
+
+    const logging = new AwsLogDriver({
+      streamPrefix: serviceConfig.hostname,
+      logGroup,
     });
 
     const taskDefinition = new FargateTaskDefinition(this, `task`, {
@@ -109,6 +115,7 @@ export class FargateServiceConstruct extends Construct {
       cpu: serviceConfig.taskDefinition.cpu,
       containerName: serviceConfig.hostname,
       secrets: secrets,
+      logging,
       environment: { ...serviceConfig.env },
     });
 

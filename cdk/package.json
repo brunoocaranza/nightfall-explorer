@@ -9,7 +9,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy:stress": "source ./tmp-stress.sh && cdk deploy --profile stress",
+    "deploy:stress": "source ./tmp-stress.sh && cdk deploy tmp-Stress-explorer --profile stress",
+    "deploy:redis:stress": "source ./tmp-stress.sh && cdk deploy RedisCluster --profile stress",
     "deploy:testnet": "source ./testnet.sh && cdk deploy --profile testnet",
     "destroy:stress": "source ./tmp-stress.sh && cdk destroy --profile stress",
     "destroy:testnet": "source ./testnet.sh && cdk destroy --profile testnet"
