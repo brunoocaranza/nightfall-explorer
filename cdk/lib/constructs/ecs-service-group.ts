@@ -68,6 +68,7 @@ export class ECSServiceGroup extends Construct {
     });
     const { service, repository } = fargateService;
 
+    //Repo containing images for node and nginx
     const baseRepo = Repository.fromRepositoryName(
       this,
       `${serviceConfig.hostname}-node-repo`,
