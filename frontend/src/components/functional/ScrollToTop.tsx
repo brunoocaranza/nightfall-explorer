@@ -9,7 +9,7 @@ const ScrollToTop = ({ children }: ChildrenProp) => {
         document.documentElement.scrollTo(0, 0);
     }, [location.pathname]);
 
-    return <>{children}</>;
+    return <div>{children}</div>;
 };
 
 export default ScrollToTop;

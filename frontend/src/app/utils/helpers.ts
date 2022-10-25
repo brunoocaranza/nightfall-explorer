@@ -4,8 +4,6 @@ import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 import { RefObject } from "react";
 
-const isDevMode = !process.env.NODE_ENV || process.env.NODE_ENV === "development";
-
 const LIMIT_PER_PAGE = 10;
 
 const init = () => {

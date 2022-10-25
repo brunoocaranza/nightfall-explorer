@@ -20,8 +20,8 @@ const App = () => {
             <HelmetProvider>
                 <Meta>
                     <HealthCheck>
-                        <Header />
                         <ScrollToTop>
+                            <Header />
                             <Suspense fallback={<GlobalLoader />}>
                                 <Routes>
                                     {Object.values(routeList).map((route) => {
