@@ -1,0 +1,29 @@
+Data set
+Blocks: 640810
+Transactions: 10574930
+
+==================================Round 1==================================
+Instance
+    Number: 2
+    Config:
+        Task memory (MiB)4096
+        Task CPU (unit)2048
+
+Test scenarios
+
+1. 300 requests / 10 secs
+
+response_time:
+  median:  48.9 ms
+
+2. 600 requests / 10 secs
+
+response_time:
+  median:  55.2 ms
+
+3. 1200 requests / 10 secs
+
+response_time:
+  median:  53 ms
+
+==================================/Round 1==================================
