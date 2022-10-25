@@ -1,16 +1,19 @@
 config:
-  target: "https://explorer-api.testnet.polygon-nightfall.technology/api/v1"
+  target: "https://explorer-api.tmp-stress.polygon-nightfall.technology/api/v1"
   phases:
     - duration: 10
-      arrivalRate: 1000 # usually it will be 2 or 3 request per user
-      name: Warm up # 5 virtual users every second for 60 seconds
-    # - duration: 120
-    #   arrivalRate: 5 
-    #   rampTo: 50 # Max of virtual users
-    #   name: Ramp up load # Over time number of virtual users will increase to 50
-    # - duration: 600
-    #   arrivalRate: 50
-    #   name: Stress test
+      arrivalRate: 3 # num of virtual users arraving every second on average
+      name: Warm up 
+    # - duration: 60
+    #   arrivalRate: 10 # num of virtual users arraving every second on average
+    #   name: Warm up 
+    # - duration: 60
+    #   arrivalRate: 10
+    #   name: 1st 
+    # - duration: 300
+    #   arrivalRate: 10
+    #   maxVusers: 50
+    #   name: 2nd 
   processor: ./processor.js
 
 scenarios:
@@ -19,9 +22,6 @@ scenarios:
       - get: # Backend service health check
           afterResponse: printStatus
           url: "/health/service"
-      - get: # Network health check
-          afterResponse: printStatus
-          url: "/health/network"
           
   - name: "Network stats"
     flow: 
