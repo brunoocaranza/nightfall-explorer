@@ -1,8 +1,14 @@
 name: Security Scans
 on:
+  pull_request:
+    branches:
+      - master
+      - develop
+      - staging
   workflow_dispatch:
     inputs:
       url:
+        default: https://explorer-api.testnet.polygon-nightfall.technology/
         required: true
         type: choice
         description: What to scan
