@@ -6,7 +6,7 @@ import { CONTRACT_CLIENT_SERVICE } from '../../../../src/utils';
 describe('Contract Controller', () => {
   let contractController: ContractController;
   const mockContractClientService = {
-    getContractAddress: jest.fn(),
+    getContractAddresses: jest.fn(),
   };
   const mockConfigService = {
     get: jest.fn().mockImplementation((key) => {
@@ -37,7 +37,7 @@ describe('Contract Controller', () => {
   });
 
   afterEach(() => {
-    mockContractClientService.getContractAddress.mockClear();
+    mockContractClientService.getContractAddresses.mockClear();
   });
 
   it('should me defined', () => {
@@ -50,35 +50,17 @@ describe('Contract Controller', () => {
     const shieldAddress = '0x2';
 
     // Spy
-    const configGetSpy = jest.spyOn(mockConfigService, 'get');
     const getContractAddressSpy = jest
-      .spyOn(mockContractClientService, 'getContractAddress')
-      .mockResolvedValueOnce(stateAddress)
-      .mockResolvedValueOnce(shieldAddress);
+      .spyOn(mockContractClientService, 'getContractAddresses')
+      .mockReturnValueOnce([{ state: stateAddress }, { shield: shieldAddress }]);
 
     // Exe
-    const result = await contractController.getContractAddresses();
+    const result = contractController.getContractAddresses();
 
     // Expect
-    expect(configGetSpy).toHaveBeenCalledTimes(2);
-    expect(getContractAddressSpy).toHaveBeenCalledTimes(2);
+    expect(getContractAddressSpy).toHaveBeenCalledTimes(1);
     expect(result.length).toBe(2);
-  });
-
-  it('should return only 1 address if one of 2 promises failes', async () => {
-    // Mock
-    const stateAddress = '0x1';
-
-    // Spy
-    jest
-      .spyOn(mockContractClientService, 'getContractAddress')
-      .mockResolvedValueOnce(stateAddress)
-      .mockRejectedValueOnce('Error');
-
-    // Exe
-    const result = await contractController.getContractAddresses();
-
-    // Expect
-    expect(result.length).toBe(1);
+    expect(result[0]['state']).toBe(stateAddress);
+    expect(result[1]['shield']).toBe(shieldAddress);
   });
 });

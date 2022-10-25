@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { IContractClientService } from '../icontract-client.service';
 import { ConfigService } from '@nestjs/config';
-import { STATE_CONTRACT } from '../../../../utils';
+import { HelperService, STATE_CONTRACT } from '../../../../utils';
 import { ProposerDTO } from '../../../../models';
 import {
   STATE_CONTRACT_ABI_FETCH_ERROR,
@@ -11,20 +11,38 @@ import {
 import { IInitService } from '../iinit.service';
 import Web3 from 'web3';
 import { HttpService } from '@nestjs/axios';
+import { CronJob } from 'cron';
+import { CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class ContractClientService implements IContractClientService, IInitService {
   private readonly logger = new Logger(STATE_CONTRACT);
   private stateContract;
-  constructor(private readonly config: ConfigService, private readonly http: HttpService) {}
+  private stateContractName: string;
+  private shieldContractName: string;
+
+  // This property holds contract addresses for client
+  private contractAddresses: Record<string, string>[] = [];
+
+  constructor(private readonly config: ConfigService, private readonly http: HttpService) {
+    this.stateContractName = this.config.get<string>('contract.stateContract');
+    this.shieldContractName = this.config.get<string>('contract.shieldContract');
+  }
 
   // Make instance of contract on application startup
   async init() {
     this.logger.log(`[${STATE_CONTRACT}] service initialization`);
-    const contractName = this.config.get('contract.stateContract');
-    const contractAddress = await this.getContractAddress(contractName);
-    const contractABI = await this.getContractAbi(contractName);
+
+    // Fetch contract addresses and save them in memory
+    await this.setContractAddresses();
+
+    const contractAddress = await this.getContractAddress(this.stateContractName);
+    const contractABI = await this.getContractAbi(this.stateContractName);
+
     this.stateContract = await this.initializeContract(contractABI, contractAddress);
+
+    // Start cron job
+    this.startCronJob();
   }
 
   /**
@@ -70,7 +88,7 @@ export class ContractClientService implements IContractClientService, IInitServi
   }
 
   // Fetching contract address from optimist
-  async getContractAddress(contractName: string): Promise<string> {
+  async getContractAddress(contractName: string, keepAliveFlag?: boolean): Promise<string> {
     const url = `${this.config.get('contract.optimistApiUrl')}/contract-address/${contractName}`;
     try {
       this.logger.log(`Fetching ${contractName} contract address from optimist`);
@@ -79,8 +97,13 @@ export class ContractClientService implements IContractClientService, IInitServi
       return response.data.address;
     } catch (_) {
       this.logger.error(`${STATE_CONTRACT_ADDRESS_FETCH_ERROR} ${url}`);
-      this.logger.error('Exiting application ...');
-      process.exit(1);
+
+      // If this function is called for listing contract addresses for client then don't exit application
+      // if optimist is not reachable, only in case of application boot
+      if (!keepAliveFlag) {
+        this.logger.error('Exiting application ...');
+        process.exit(1);
+      }
     }
   }
 
@@ -97,5 +120,38 @@ export class ContractClientService implements IContractClientService, IInitServi
       this.logger.error('Exiting application ...');
       process.exit(1);
     }
+  }
+
+  getContractAddresses(): Record<string, string>[] {
+    return this.contractAddresses;
+  }
+
+  // Fetching contract addresses. This function will be called through cron job so optimist is not spammed with each client request
+  async setContractAddresses(): Promise<void> {
+    const promises: Promise<string>[] = Array.from([this.stateContractName, this.shieldContractName], (name) =>
+      this.getContractAddress(name, true)
+    );
+
+    const [state, shield] = await Promise.allSettled(promises);
+    const result: Record<string, string>[] = [];
+
+    if (HelperService.isFullfiledPromise(state)) {
+      result.push({
+        [`${this.stateContractName.toLowerCase()}`]: `${HelperService.getPromiseValue<string>(state)}`,
+      });
+    }
+
+    if (HelperService.isFullfiledPromise(shield)) {
+      result.push({
+        [`${this.shieldContractName.toLowerCase()}`]: `${HelperService.getPromiseValue<string>(shield)}`,
+      });
+    }
+
+    this.contractAddresses = result;
+  }
+
+  startCronJob() {
+    const job = new CronJob(CronExpression.EVERY_MINUTE, this.setContractAddresses.bind(this));
+    job.start();
   }
 }
