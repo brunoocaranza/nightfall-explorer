@@ -21,8 +21,8 @@ jobs:
       matrix:
         url:
           [
-            https://explorer.testnet.polygon-nightfall.technology/,
-            https://explorer-api.testnet.polygon-nightfall.technology/,
+            "https://explorer.testnet.polygon-nightfall.technology/",
+            "https://explorer-api.testnet.polygon-nightfall.technology/",
           ]
     runs-on: ubuntu-latest
     name: Scan the webapplication
