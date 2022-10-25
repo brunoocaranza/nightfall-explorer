@@ -4,8 +4,6 @@ import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 import { RefObject } from "react";
 
-const isDevMode = !process.env.NODE_ENV || process.env.NODE_ENV === "development";
-
 const LIMIT_PER_PAGE = 10;
 
 const init = () => {
@@ -33,8 +31,6 @@ const redirectPath = (path: string, param: string, challenged: boolean | undefin
 };
 
 const env = (variable: ENVTypeNames) => {
-    if (!isDevMode) return window._env[variable];
-
     const envs: ENVType = {
         APP_NAME: process.env.APP_NAME,
         APP_URL: process.env.APP_URL,
