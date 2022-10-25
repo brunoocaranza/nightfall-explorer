@@ -17,6 +17,13 @@ on:
           - https://explorer-api.testnet.polygon-nightfall.technology/
 jobs:
   zap_scan:
+    strategy:
+      matrix:
+        url:
+          [
+            https://explorer.testnet.polygon-nightfall.technology/,
+            https://explorer-api.testnet.polygon-nightfall.technology/,
+          ]
     runs-on: ubuntu-latest
     name: Scan the webapplication
     steps:
@@ -28,7 +35,7 @@ jobs:
         id: seturl
         run: |
           MAYBE_URL=${{ github.event.inputs.url }}
-          URL=${MAYBE_URL:-"https://explorer-api.testnet.polygon-nightfall.technology/"}
+          URL=${MAYBE_URL:-${{ matrix.url }}}
           echo "::set-output name=url::${URL}"
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.4.0
