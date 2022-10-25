@@ -1,4 +1,4 @@
-import { SecretValue, Stack, StackProps } from "aws-cdk-lib";
+import { SecretValue, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { Artifact, Pipeline } from "aws-cdk-lib/aws-codepipeline";
 import {
@@ -103,7 +103,7 @@ export class CiCdS3Frontend extends Construct {
               commands: [`cd ${projectFolderName}`, "npm install"],
             },
             build: {
-              commands: ["npm run build", "./set-evn.sh"],
+              commands: ["npm run build"],
             },
             post_build: {
               commands: [

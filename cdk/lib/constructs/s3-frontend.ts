@@ -1,7 +1,7 @@
 import { Construct } from "constructs";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
-import { CfnOutput, RemovalPolicy } from "aws-cdk-lib";
+import { CfnOutput, Duration, RemovalPolicy } from "aws-cdk-lib";
 import { IHostedZone } from "aws-cdk-lib/aws-route53";
 import * as route53 from "aws-cdk-lib/aws-route53";
 import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
@@ -9,6 +9,7 @@ import * as targets from "aws-cdk-lib/aws-route53-targets";
 import { DnsAndCertificateConstruct } from "./dns-certificate-construct";
 import { frontend, zone } from "../config";
 import { CiCdS3Frontend } from "./cicd-s3-front";
+import * as cloudfrontOrigins from "aws-cdk-lib/aws-cloudfront-origins";
 export interface S3ReactProps {
   bucketName: string;
   zoneName: string;
@@ -28,18 +29,87 @@ export class S3Frontend extends Construct {
     const siteDomain = `${hostname}.${props.zoneName}`;
 
     const siteBucket = new s3.Bucket(this, "ExplorerFrontend", {
-      // removalPolicy: RemovalPolicy.DESTROY,
-      // autoDeleteObjects: true,
       bucketName: props.bucketName,
-      websiteIndexDocument: "index.html",
-      cors: [
-        {
-          allowedMethods: [s3.HttpMethods.GET],
-          allowedHeaders: ["*"],
-          allowedOrigins: [siteDomain],
-        },
-      ],
+      publicReadAccess: false,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      removalPolicy: RemovalPolicy.RETAIN,
+      accessControl: s3.BucketAccessControl.PRIVATE,
+      objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
+      encryption: s3.BucketEncryption.S3_MANAGED,
     });
+
+    // Grant access to cloudfron
+    new CfnOutput(this, "Bucket-Output", { value: siteBucket.bucketName });
+
+    const cert = new DnsAndCertificateConstruct(this, "cert", {
+      zone: props.zone,
+      hostname: hostname,
+      cloudfront: true,
+    });
+    const { certificate } = cert;
+
+    // // CloudFront distribution
+    // const distributiond = new cloudfront.CloudFrontWebDistribution(
+    //   this,
+    //   "SiteDistribution",
+    //   {
+    //     defaultRootObject: "index.html",
+    //     originConfigs: [
+    //       {
+    //         s3OriginSource: {
+    //           s3BucketSource: s3.Bucket.fromBucketArn(
+    //             this,
+    //             `${zone.hostname}-bucketn`,
+    //             siteBucket.bucketArn
+    //           ),
+    //         },
+    //         behaviors: [{ isDefaultBehavior: true }],
+    //       },
+    //     ],
+    //   }
+    // );
+
+    const myResponseHeadersPolicy = new cloudfront.ResponseHeadersPolicy(
+      this,
+      "ResponseHeadersPolicy",
+      {
+        responseHeadersPolicyName: "explorer-response-policy",
+        comment: "A default policy",
+        corsBehavior: {
+          accessControlAllowCredentials: false,
+          accessControlAllowHeaders: ["*"],
+          accessControlAllowMethods: ["GET"],
+          accessControlAllowOrigins: ["*"],
+          accessControlMaxAge: Duration.seconds(600),
+          originOverride: true,
+        },
+        securityHeadersBehavior: {
+          contentSecurityPolicy: {
+            contentSecurityPolicy: "default-src https:;",
+            override: true,
+          },
+          contentTypeOptions: { override: true },
+          frameOptions: {
+            frameOption: cloudfront.HeadersFrameOption.DENY,
+            override: true,
+          },
+          referrerPolicy: {
+            referrerPolicy: cloudfront.HeadersReferrerPolicy.NO_REFERRER,
+            override: true,
+          },
+          strictTransportSecurity: {
+            accessControlMaxAge: Duration.seconds(600),
+            includeSubdomains: true,
+            override: true,
+          },
+          xssProtection: {
+            protection: true,
+            modeBlock: true,
+            override: true,
+          },
+        },
+      }
+    );
 
     const cloudfrontOAI = new cloudfront.OriginAccessIdentity(
       this,
@@ -51,38 +121,29 @@ export class S3Frontend extends Construct {
     // grant s3:list, s3:getBucket, s3:getObject to the OAI
     siteBucket.grantRead(cloudfrontOAI);
 
-    // Grant access to cloudfron
-    new CfnOutput(this, "Bucket-Output", { value: siteBucket.bucketName });
-
-    const cert = new DnsAndCertificateConstruct(this, "cert", {
-      zone: props.zone,
-      hostname: hostname,
-      cloudfront: true,
-    });
-    const viewrcert = cert.getViewerCertificate();
-
-    // CloudFront distribution
-    const distribution = new cloudfront.CloudFrontWebDistribution(
+    const distribution = new cloudfront.Distribution(
       this,
-      "SiteDistribution",
+      "Cloud-front-s3-frontend",
       {
         defaultRootObject: "index.html",
-        viewerCertificate: viewrcert,
-        originConfigs: [
-          {
-            s3OriginSource: {
-              s3BucketSource: s3.Bucket.fromBucketArn(
-                this,
-                `${zone.hostname}-bucketn`,
-                siteBucket.bucketArn
-              ),
-              originAccessIdentity: cloudfrontOAI,
-            },
-            behaviors: [{ isDefaultBehavior: true }],
-          },
-        ],
+        domainNames: [siteDomain],
+        certificate,
+        defaultBehavior: {
+          // origin: new S3Origin(siteBucket, {
+          //   originAccessIdentity: cloudfrontOAI,
+          // }),
+          origin: new cloudfrontOrigins.S3Origin(siteBucket, {
+            originAccessIdentity: cloudfrontOAI,
+          }),
+          compress: true,
+          responseHeadersPolicy: myResponseHeadersPolicy,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        },
       }
     );
+    // distribution.node.addDependency(cloudfrontOAI);
 
     new CfnOutput(this, "DistributionId", {
       value: distribution.distributionId,
