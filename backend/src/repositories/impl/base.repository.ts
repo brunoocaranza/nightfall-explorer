@@ -35,7 +35,6 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
 
     const skipValue = paginationParams.limit * (paginationParams.page - 1);
     const query: QueryFilter = {};
-    const countQuery: QueryFilter = {};
 
     if (paginationParams instanceof BlockPaginationParams) {
       // Pickup default values
@@ -44,24 +43,21 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
       // For now only filter is block's proposer. If something new comes make this more dynamic
       if ((paginationParams as BlockPaginationParams).proposer) {
         query[BlockSearchFields.PROPOSER] = (paginationParams as BlockPaginationParams).proposer;
-        countQuery[BlockSearchFields.PROPOSER] = (paginationParams as BlockPaginationParams).proposer;
         delete (paginationParams as BlockPaginationParams).proposer;
       }
     } else {
       // Pickup default values
       paginationParams = Object.assign(new ProposerPaginationParams(), paginationParams);
       query[ProposerSearchFields.IS_ACTIVE] = true;
-      countQuery[ProposerSearchFields.IS_ACTIVE] = true;
 
       if ((paginationParams as ProposerPaginationParams).address) {
         // Address field will have list of addresses devided by ,
         const addresses = (paginationParams as ProposerPaginationParams).address.split(',');
         query[ProposerSearchFields.ADDRESS] = { $in: addresses };
-        countQuery[ProposerSearchFields.ADDRESS] = { $in: addresses };
       }
     }
 
-    const totalDocs = await this.count(countQuery);
+    const totalDocs = await this.count(query);
     const docs = (await this._model
       .find(query)
       .skip(skipValue)
