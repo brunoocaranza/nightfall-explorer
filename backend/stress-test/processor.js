@@ -50,16 +50,12 @@ const generateTxHash = (requstParams, ctx, ee, next) => {
 
   next();
 };
-
-const sortColumn = ['blockNumberL2', 'timeBlockL2'];
 const generateBlockPagination = (requstParams, ctx, ee, next) => {
   const limit = randomNumBetween(1, 10);
-  const blockCount = +stats['blockCount'];
-  const max = Math.round(blockCount / limit);
   ctx.vars['limit'] = limit;
-  ctx.vars['page'] = randomNumBetween(1, max);
-  ctx.vars['sortDirection'] = sortDirection[randomNumBetween(0, 1)];
-  ctx.vars['sortColumn'] = sortColumn[randomNumBetween(0, 1)];
+  ctx.vars['page'] = 1;
+  ctx.vars['sortDirection'] = 'desc';
+  ctx.vars['sortColumn'] = 'blockNumberL2';
   next();
 };
 
@@ -67,7 +63,7 @@ const generateBlockPaginationProposer = (requstParams, ctx, ee, next) => {
   ctx.vars['limit'] = randomNumBetween(1, 10);
   ctx.vars['page'] = 1;
   ctx.vars['sortDirection'] = sortDirection[randomNumBetween(0, 1)];
-  ctx.vars['sortColumn'] = sortColumn[randomNumBetween(0, 1)];
+  ctx.vars['sortColumn'] = 'blockNumberL2';
   const proposers = allData[0];
   ctx.vars['proposer'] = proposers[randomNumBetween(0, proposers.length - 1)];
   next();

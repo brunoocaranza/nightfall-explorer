@@ -1,16 +1,15 @@
 config:
-  target: "https://explorer-api.testnet.polygon-nightfall.technology/api/v1"
+  target: "https://explorer-api.tmp-stress.polygon-nightfall.technology/api/v1"
   phases:
     - duration: 10
-      arrivalRate: 1000 # usually it will be 2 or 3 request per user
-      name: Warm up # 5 virtual users every second for 60 seconds
-    # - duration: 120
-    #   arrivalRate: 5 
-    #   rampTo: 50 # Max of virtual users
-    #   name: Ramp up load # Over time number of virtual users will increase to 50
-    # - duration: 600
-    #   arrivalRate: 50
-    #   name: Stress test
+      arrivalCount: 200
+      name: Warm up 
+    - duration: 10
+      arrivalCount: 400 
+      name: First load
+    - duration: 10
+      arrivalCount: 800
+      name: Second load
   processor: ./processor.js
 
 scenarios:
@@ -19,9 +18,6 @@ scenarios:
       - get: # Backend service health check
           afterResponse: printStatus
           url: "/health/service"
-      - get: # Network health check
-          afterResponse: printStatus
-          url: "/health/network"
           
   - name: "Network stats"
     flow: 
@@ -85,10 +81,10 @@ scenarios:
           beforeRequest: generateProposerAddress
           afterResponse: printStatus
           url: "/proposer/{{ address }}"
-      - get: # Proposers paginated
-          beforeRequest: generateProposerPagination
-          afterResponse: printStatus
-          url: "/proposer?limit={{ limit }}&page={{ page }}&sortDirection={{ sortDirection }}&sortColumn={{ sortColumn }}"
+      # - get: # Proposers paginated
+      #     beforeRequest: generateProposerPagination
+      #     afterResponse: printStatus
+      #     url: "/proposer?limit={{ limit }}&page={{ page }}&sortDirection={{ sortDirection }}&sortColumn={{ sortColumn }}"
 
 
 
