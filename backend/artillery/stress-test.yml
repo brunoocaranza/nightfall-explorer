@@ -2,14 +2,18 @@ config:
   target: "https://explorer-api.tmp-stress.polygon-nightfall.technology/api/v1"
   phases:
     - duration: 10
-      arrivalCount: 200
+      arrivalRate: 3 # num of virtual users arraving every second on average
       name: Warm up 
-    - duration: 10
-      arrivalCount: 400 
-      name: First load
-    - duration: 10
-      arrivalCount: 800
-      name: Second load
+    # - duration: 60
+    #   arrivalRate: 10 # num of virtual users arraving every second on average
+    #   name: Warm up 
+    # - duration: 60
+    #   arrivalRate: 10
+    #   name: 1st 
+    # - duration: 300
+    #   arrivalRate: 10
+    #   maxVusers: 50
+    #   name: 2nd 
   processor: ./processor.js
 
 scenarios:
@@ -81,10 +85,10 @@ scenarios:
           beforeRequest: generateProposerAddress
           afterResponse: printStatus
           url: "/proposer/{{ address }}"
-      # - get: # Proposers paginated
-      #     beforeRequest: generateProposerPagination
-      #     afterResponse: printStatus
-      #     url: "/proposer?limit={{ limit }}&page={{ page }}&sortDirection={{ sortDirection }}&sortColumn={{ sortColumn }}"
+      - get: # Proposers paginated
+          beforeRequest: generateProposerPagination
+          afterResponse: printStatus
+          url: "/proposer?limit={{ limit }}&page={{ page }}&sortDirection={{ sortDirection }}&sortColumn={{ sortColumn }}"
 
 
 
