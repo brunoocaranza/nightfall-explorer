@@ -29,7 +29,7 @@ jobs:
         run: |
           MAYBE_URL=${{ github.event.inputs.url }}
           URL=${MAYBE_URL:-"https://explorer-api.testnet.polygon-nightfall.technology/"}
-          echo "::set-output name=url::${{ URL }}"
+          echo "::set-output name=url::${URL}"
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.4.0
         with:
