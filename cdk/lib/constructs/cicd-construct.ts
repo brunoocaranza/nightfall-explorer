@@ -40,12 +40,12 @@ export class CiCdConstruct extends Construct {
     const gitHubSource = codebuild.Source.gitHub({
       owner: gitOwner,
       repo: gitRepository,
-      webhook: false, // optional, default: true if `webhookFilteres` were provided, false otherwise
-      // webhookFilters: [
-      //   codebuild.FilterGroup.inEventOf(codebuild.EventAction.PUSH).andBranchIs(
-      //     `${gitBranch}`
-      //   ),
-      // ], // optional, by default all pushes and Pull Requests will trigger a build
+      webhook: true, // optional, default: true if `webhookFilteres` were provided, false otherwise
+      webhookFilters: [
+        codebuild.FilterGroup.inEventOf(codebuild.EventAction.PUSH)
+          .andBranchIs(`${gitBranch}`)
+          .andFilePathIs(`./${service.projectFolderName}/*`),
+      ], // optional, by default all pushes and Pull Requests will trigger a build
     });
 
     // CODEBUILD - project
