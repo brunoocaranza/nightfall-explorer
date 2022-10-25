@@ -1,4 +1,4 @@
-import { HASH_SHA1_PATTERN, HASH_SHA512_PATTERN } from '../constants';
+import { HASH_SHA1_PATTERN, HASH_SHA512_PATTERN, MILION } from '../constants';
 import moment from 'moment';
 import { OrQueryFilter, QueryFilter } from '../../models';
 import { BlockSearchFields, TransactionSearchFields } from '../enums';
@@ -68,8 +68,8 @@ export class HelperService {
 
   public static calculateBlocksPercentage(total: number, part: number): number {
     const result = (part / total) * 100;
-    if (result < 1) return this.round(result, 7);
-    return this.round(result, 2);
+    const numOfDecimals = result > 1 ? 2 : total > MILION ? 5 : 3;
+    return this.round(result, numOfDecimals);
   }
 
   public static sortArray<T>(items: T[], direction: string, byField: string): T[] {
