@@ -5,6 +5,13 @@ import Web3 from 'web3';
 import { STATE_CONTRACT_CURRENT_PROPOSER_ERROR } from '../../../../src/utils/exceptions';
 import { HttpService } from '@nestjs/axios';
 import { proposer, TestLogger } from '../../../mocks';
+import { CronJob } from 'cron';
+
+jest.mock('cron', () => {
+  const mScheduleJob = { start: jest.fn(), stop: jest.fn() };
+  const mCronJob = jest.fn(() => mScheduleJob);
+  return { CronJob: mCronJob };
+});
 
 const mockProposer = {
   '0': '0xCaE0ed659d7821b59bBFd1b6B79260051e5E9111',
@@ -61,6 +68,8 @@ describe('Contract Client service', () => {
         };
       } else if (key === 'contract.stateContract') {
         return 'State';
+      } else if (key === 'contract.shieldContract') {
+        return 'Shield';
       } else if (key === 'contract.optimistApiUrl') return optimistUrl;
       return null;
     }),
@@ -104,11 +113,22 @@ describe('Contract Client service', () => {
     expect(contractClientService).toBeDefined();
   });
 
+  it('should start cron job', (done) => {
+    const job = new CronJob('*/30 * * * * *', jest.fn());
+    contractClientService.startCronJob();
+
+    expect(CronJob).toHaveBeenCalled();
+    expect(job.start).toHaveBeenCalled();
+    done();
+  });
+
   it('should call initializeContract in init', async () => {
     // Mock
     const contractName = 'State';
 
     // Spy
+    const setContractAddressesSpy = jest.spyOn(contractClientService, 'setContractAddresses');
+    const startCronJobSpy = jest.spyOn(contractClientService, 'startCronJob');
     const getContractAddressSpy = jest
       .spyOn(contractClientService, 'getContractAddress')
       .mockResolvedValue(proposer.address);
@@ -125,6 +145,8 @@ describe('Contract Client service', () => {
     expect(getContractAbiSpy).toHaveBeenCalledWith(contractName);
     expect(initializeContractSpy).toHaveBeenCalledWith({}, proposer.address);
     expect(configGetSpy).toHaveBeenCalledWith('contract.stateContract');
+    expect(setContractAddressesSpy).toHaveBeenCalled();
+    expect(startCronJobSpy).toHaveBeenCalled();
   });
 
   describe('Contract address fetch', () => {
@@ -148,6 +170,7 @@ describe('Contract Client service', () => {
       jest.spyOn(mockHttpService.axiosRef, 'get').mockRejectedValue('');
 
       await contractClientService.getContractAddress('');
+
       expect(processExitSpy).toHaveBeenCalledWith(1);
     });
   });
@@ -186,6 +209,44 @@ describe('Contract Client service', () => {
       jest.spyOn(stateContract.methods, 'currentProposer').mockRejectedValue('');
 
       await expect(contractClientService.getCurrentProposer()).rejects.toEqual(STATE_CONTRACT_CURRENT_PROPOSER_ERROR);
+    });
+  });
+
+  describe('Fetch contract addresses', () => {
+    it('should call optimist for addresses', async () => {
+      // Mock
+      const stateAddress = '0x1';
+      const shieldAddress = '0x2';
+
+      // Spy
+      const getContractAddressSpy = jest
+        .spyOn(contractClientService, 'getContractAddress')
+        .mockResolvedValueOnce(stateAddress)
+        .mockResolvedValueOnce(shieldAddress);
+
+      // Exe
+      await contractClientService.setContractAddresses();
+
+      // Expect
+      expect(getContractAddressSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('should return only 1 address if one of 2 promises failes', async () => {
+      // Mock
+      const stateAddress = '0x1';
+
+      // Spy
+      jest
+        .spyOn(contractClientService, 'getContractAddress')
+        .mockResolvedValueOnce(stateAddress)
+        .mockRejectedValueOnce('Error');
+
+      await contractClientService.setContractAddresses();
+      // Exe
+      const result = await contractClientService.getContractAddresses();
+
+      // Expect
+      expect(result.length).toBe(1);
     });
   });
 });
