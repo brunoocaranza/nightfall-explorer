@@ -33,8 +33,6 @@ const redirectPath = (path: string, param: string, challenged: boolean | undefin
 };
 
 const env = (variable: ENVTypeNames) => {
-    if (!isDevMode) return window._env[variable];
-
     const envs: ENVType = {
         APP_NAME: process.env.APP_NAME,
         APP_URL: process.env.APP_URL,

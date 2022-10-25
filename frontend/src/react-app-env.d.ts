@@ -6,12 +6,6 @@ interface IENV {
     L1_EXPLORER_URL: string;
 }
 
-declare global {
-    interface Window {
-        _env: IENV;
-    }
-}
-
 declare module "*.svg" {
     import React = require("react");
     const src: React.FC<React.SVGProps<SVGSVGElement>> | string | unefined;
