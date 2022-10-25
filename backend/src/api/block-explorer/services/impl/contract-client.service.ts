@@ -29,7 +29,7 @@ export class ContractClientService implements IContractClientService, IInitServi
     this.shieldContractName = this.config.get<string>('contract.shieldContract');
   }
 
-  // Make instance of contract on application startup
+  // This function is called on application startup
   async init() {
     this.logger.log(`[${STATE_CONTRACT}] service initialization`);
 
@@ -39,6 +39,7 @@ export class ContractClientService implements IContractClientService, IInitServi
     const contractAddress = await this.getContractAddress(this.stateContractName);
     const contractABI = await this.getContractAbi(this.stateContractName);
 
+    // Make instance of contract
     this.stateContract = await this.initializeContract(contractABI, contractAddress);
 
     // Start cron job
@@ -98,8 +99,8 @@ export class ContractClientService implements IContractClientService, IInitServi
     } catch (_) {
       this.logger.error(`${STATE_CONTRACT_ADDRESS_FETCH_ERROR} ${url}`);
 
-      // If this function is called for listing contract addresses for client then don't exit application
-      // if optimist is not reachable, only in case of application boot
+      // If this function is called for setting contract addresses for client then don't exit application if optimist is not reachable
+      // Only exit from app when calling this function for contract initialization
       if (!keepAliveFlag) {
         this.logger.error('Exiting application ...');
         process.exit(1);
