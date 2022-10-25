@@ -37,10 +37,10 @@ const MODULES = [
   imports: [...MODULES],
   controllers: [],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: RateLimiterGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RateLimiterGuard,
+    // },
   ],
 })
 export class AppModule implements NestModule {
