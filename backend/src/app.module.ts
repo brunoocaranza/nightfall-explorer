@@ -6,9 +6,6 @@ import appConfiguration from './config/app.config';
 import { DatabaseModule } from './config/database';
 import { RequestMiddleware, SearchMiddleware } from './middlewares';
 import { ScheduleModule } from '@nestjs/schedule';
-import { RedisModule } from './config/redis';
-import { APP_GUARD } from '@nestjs/core';
-import { RateLimiterGuard } from './guards';
 
 const envConfig = () => {
   const option: ConfigModuleOptions = {
@@ -27,7 +24,6 @@ const envConfig = () => {
 const MODULES = [
   ConfigModule.forRoot(envConfig()),
   DatabaseModule,
-  RedisModule,
   ScheduleModule.forRoot(),
   HealthModule,
   BlockExplorerModule,
@@ -36,12 +32,7 @@ const MODULES = [
 @Module({
   imports: [...MODULES],
   controllers: [],
-  providers: [
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: RateLimiterGuard,
-    // },
-  ],
+  providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
