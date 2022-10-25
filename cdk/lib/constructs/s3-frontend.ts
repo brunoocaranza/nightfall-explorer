@@ -47,28 +47,6 @@ export class S3Frontend extends Construct {
       cloudfront: true,
     });
     const { certificate } = cert;
-
-    // // CloudFront distribution
-    // const distributiond = new cloudfront.CloudFrontWebDistribution(
-    //   this,
-    //   "SiteDistribution",
-    //   {
-    //     defaultRootObject: "index.html",
-    //     originConfigs: [
-    //       {
-    //         s3OriginSource: {
-    //           s3BucketSource: s3.Bucket.fromBucketArn(
-    //             this,
-    //             `${zone.hostname}-bucketn`,
-    //             siteBucket.bucketArn
-    //           ),
-    //         },
-    //         behaviors: [{ isDefaultBehavior: true }],
-    //       },
-    //     ],
-    //   }
-    // );
-
     const myResponseHeadersPolicy = new cloudfront.ResponseHeadersPolicy(
       this,
       "ResponseHeadersPolicy",
@@ -129,9 +107,6 @@ export class S3Frontend extends Construct {
         domainNames: [siteDomain],
         certificate,
         defaultBehavior: {
-          // origin: new S3Origin(siteBucket, {
-          //   originAccessIdentity: cloudfrontOAI,
-          // }),
           origin: new cloudfrontOrigins.S3Origin(siteBucket, {
             originAccessIdentity: cloudfrontOAI,
           }),
