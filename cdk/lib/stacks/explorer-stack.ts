@@ -13,6 +13,7 @@ import { DnsAndCertificateConstruct } from "../constructs/dns-certificate-constr
 import { VpcConstruct } from "../constructs/vpc-construct";
 import { ECSServiceGroup } from "../constructs/ecs-service-group";
 import { RedisConstruct } from "../constructs/elastic-cache";
+import { S3Frontend } from "../constructs/s3-frontend";
 /**
  * This stack is responsible for creating the infrastructure for the ECS services.
  */
@@ -129,7 +130,7 @@ export class ExplorerStack extends cdk.Stack {
     /*
       Faragate Service Configuration
     */
-    const fargateServices = [explorerApi, frontend, syncService]; // fargate service configurations
+    const fargateServices = [explorerApi, syncService]; // fargate service configurations
     explorerApiPrivate.hostname
       ? fargateServices.push(explorerApiPrivate)
       : null;
@@ -145,6 +146,18 @@ export class ExplorerStack extends cdk.Stack {
         usCertificate: usCert.certificate,
         zone,
       });
+    });
+
+    const frontendBucket = new S3Frontend(this, `Explorer Frontend Bucket`, {
+      bucketName: `${explorer.envName}-${explorer.name}-frontend`.toLowerCase(),
+      zoneName: zone.zoneName,
+      hostname: "explorer",
+      zone: zone,
+      repo: explorer.git.repository,
+      repoOwner: explorer.git.owner,
+      repoBranch: explorer.git.branch,
+      gitTokenSecretPath: explorer.git.token,
+      account: this.account,
     });
   }
 }
