@@ -111,8 +111,6 @@ export class FargateServiceConstruct extends Construct {
         this.repository,
         serviceConfig.ecr.tag
       ),
-      memoryLimitMiB: serviceConfig.taskDefinition.memoryLimitMiB,
-      cpu: serviceConfig.taskDefinition.cpu,
       containerName: serviceConfig.hostname,
       secrets: secrets,
       logging,

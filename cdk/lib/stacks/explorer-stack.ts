@@ -37,22 +37,6 @@ export class ExplorerStack extends cdk.Stack {
     );
     const { vpc } = vpcConstruct;
 
-    const redisCluster = new RedisConstruct(this, "RedisCluster", {
-      vpc,
-    });
-
-    // add redis cluster endpoint to the explorer config
-    explorerApi.env = {
-      ...explorerApi.env,
-      REDIS_HOST: redisCluster.redisEndpoint,
-      REDIS_PORT: redisCluster.redisPort,
-    };
-    explorerApiPrivate.env = {
-      ...explorerApiPrivate.env,
-      REDIS_HOST: redisCluster.redisEndpoint,
-      REDIS_PORT: redisCluster.redisPort,
-    };
-
     //ECS CLUSTER
     const cluster = new ecs.Cluster(
       this,
@@ -151,7 +135,6 @@ export class ExplorerStack extends cdk.Stack {
     const frontendBucket = new S3Frontend(this, `Explorer Frontend Bucket`, {
       bucketName: `${explorer.envName}-${explorer.name}-frontend`.toLowerCase(),
       zoneName: zone.zoneName,
-      hostname: "explorer",
       zone: zone,
       repo: explorer.git.repository,
       repoOwner: explorer.git.owner,

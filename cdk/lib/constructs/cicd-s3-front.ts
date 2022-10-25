@@ -84,8 +84,7 @@ export class CiCdS3Frontend extends Construct {
     distributionId: string,
     staticWebsiteBucket: string,
     account: string,
-    //TODO it only takes "12", "14"
-    nodejs: string, // "16.x.x", "16.17.0"
+    nodejs: string, // "16" ...
     projectFolderName: string,
     environmentVariables: FrontendEnvVars
   ) {

@@ -10,6 +10,7 @@ import { ExplorerALB } from "./alb-construct";
 import { CiCdConstruct } from "./cicd-construct";
 import { ExplorerCloudFront } from "./cloud-front";
 import { FargateServiceConstruct } from "./ecs-service";
+import { WafExplorer } from "./waf";
 
 export interface EcsServiceGroupProps {
   serviceConfig: ServiceConfig;
@@ -53,6 +54,12 @@ export class ECSServiceGroup extends Construct {
       zone,
     });
     const { httpsListener, alb } = explorerAlb;
+
+    if (!privateNode) {
+      new WafExplorer(this, `waf`, {
+        alb,
+      });
+    }
 
     // Create the Fargate Service
     const fargateService = new FargateServiceConstruct(this, `service`, {

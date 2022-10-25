@@ -1,7 +1,7 @@
 import { Construct } from "constructs";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
-import { CfnOutput } from "aws-cdk-lib";
+import { CfnOutput, RemovalPolicy } from "aws-cdk-lib";
 import { IHostedZone } from "aws-cdk-lib/aws-route53";
 import * as route53 from "aws-cdk-lib/aws-route53";
 import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
@@ -12,7 +12,6 @@ import { CiCdS3Frontend } from "./cicd-s3-front";
 export interface S3ReactProps {
   bucketName: string;
   zoneName: string;
-  hostname: string;
   zone: IHostedZone;
   repo: string;
   repoOwner: string;
@@ -25,9 +24,12 @@ export class S3Frontend extends Construct {
   constructor(scope: Construct, id: string, props: S3ReactProps) {
     super(scope, id);
 
-    const siteDomain = `${props.hostname}.${props.zoneName}`;
-    //TODO initialize the bucket with init script
+    const { hostname } = frontend;
+    const siteDomain = `${hostname}.${props.zoneName}`;
+
     const siteBucket = new s3.Bucket(this, "ExplorerFrontend", {
+      // removalPolicy: RemovalPolicy.DESTROY,
+      // autoDeleteObjects: true,
       bucketName: props.bucketName,
       websiteIndexDocument: "index.html",
       cors: [
@@ -50,11 +52,11 @@ export class S3Frontend extends Construct {
     siteBucket.grantRead(cloudfrontOAI);
 
     // Grant access to cloudfron
-    new CfnOutput(this, "Bucket", { value: siteBucket.bucketName });
+    new CfnOutput(this, "Bucket-Output", { value: siteBucket.bucketName });
 
     const cert = new DnsAndCertificateConstruct(this, "cert", {
       zone: props.zone,
-      hostname: props.hostname,
+      hostname: hostname,
       cloudfront: true,
     });
     const viewrcert = cert.getViewerCertificate();
@@ -95,16 +97,16 @@ export class S3Frontend extends Construct {
       zone: props.zone,
     });
 
-    // react needs to be build in order to be deployed to s3
-    // it can be ignored and can run in a separate pipeline
-    const path = `${process.cwd()}/../frontend/dist`;
-    // Deploy site contents to S3 bucket
-    new s3deploy.BucketDeployment(this, "DeployWithInvalidation", {
-      sources: [s3deploy.Source.asset(path)],
-      destinationBucket: siteBucket,
-      distribution,
-      distributionPaths: ["/*"],
-    });
+    // // react needs to be build in order to be deployed to s3
+    // // it can be ignored and can run in a separate pipeline
+    // const path = `${process.cwd()}/../frontend/dist`;
+    // // Deploy site contents to S3 bucket
+    // new s3deploy.BucketDeployment(this, "DeployWithInvalidation", {
+    //   sources: [s3deploy.Source.asset(path)],
+    //   destinationBucket: siteBucket,
+    //   distribution,
+    //   distributionPaths: ["/*"],
+    // });
 
     new CiCdS3Frontend(this, "cicd", {
       distributionId: distribution.distributionId,

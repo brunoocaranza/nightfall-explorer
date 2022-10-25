@@ -13,10 +13,10 @@ export interface FrontendS3Config {
 }
 
 export const frontend: FrontendS3Config = {
-  projectFolderName: "frontend",
-  nodejs: "16",
-  hostname: process.env.FRONTEND_HOSTNAME || "client",
-  bucketName: `${process.env.ENV_NAME}-${process.env.APP_NAME}`.toLowerCase(),
+  projectFolderName: "frontend", // name of a folder where frontend is located inside of repo
+  nodejs: process.env.FRONTEND_NODEJS_VERSION!,
+  hostname: process.env.FRONTEND_HOSTNAME!,
+  bucketName: process.env.FRONTEND_BUCKET_NAME!,
   env: {
     APP_NAME: {
       value: process.env.FRONTEND_APP_NAME,
