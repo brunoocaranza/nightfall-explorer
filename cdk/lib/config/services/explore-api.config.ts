@@ -52,8 +52,6 @@ export const explorerApi: ServiceConfig = {
     NIGHTFALL_OPTIMIST_URL: process.env.NIGHTFALL_OPTIMIST_URL,
     NIGHTFALL_DASHBOARD_URL: process.env.NIGHTFALL_DASHBOARD_URL,
     EXPLORER_SYNC_URL: `https://${process.env.SYNC_HOSTNAME}.${process.env.DNS_ZONE_NAME}`,
-    REDIS_HOST: process.env.REDIS_HOST,
-    REDIS_PORT: process.env.REDIS_PORT,
   },
   secretVars: [
     {

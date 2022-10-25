@@ -13,13 +13,16 @@ jobs:
     strategy:
       matrix:
         node-version: [16.17.0]
-
+    defaults:
+      run:
+        working-directory: ./backend
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run test
+      - run: 
+        |
+          npm install
+          npm run test

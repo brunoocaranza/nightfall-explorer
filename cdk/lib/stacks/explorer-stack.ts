@@ -13,6 +13,7 @@ import { DnsAndCertificateConstruct } from "../constructs/dns-certificate-constr
 import { VpcConstruct } from "../constructs/vpc-construct";
 import { ECSServiceGroup } from "../constructs/ecs-service-group";
 import { RedisConstruct } from "../constructs/elastic-cache";
+import { S3Frontend } from "../constructs/s3-frontend";
 /**
  * This stack is responsible for creating the infrastructure for the ECS services.
  */
@@ -35,22 +36,6 @@ export class ExplorerStack extends cdk.Stack {
       }
     );
     const { vpc } = vpcConstruct;
-
-    const redisCluster = new RedisConstruct(this, "RedisCluster", {
-      vpc,
-    });
-
-    // add redis cluster endpoint to the explorer config
-    explorerApi.env = {
-      ...explorerApi.env,
-      REDIS_HOST: redisCluster.redisEndpoint,
-      REDIS_PORT: redisCluster.redisPort,
-    };
-    explorerApiPrivate.env = {
-      ...explorerApiPrivate.env,
-      REDIS_HOST: redisCluster.redisEndpoint,
-      REDIS_PORT: redisCluster.redisPort,
-    };
 
     //ECS CLUSTER
     const cluster = new ecs.Cluster(
@@ -129,7 +114,7 @@ export class ExplorerStack extends cdk.Stack {
     /*
       Faragate Service Configuration
     */
-    const fargateServices = [explorerApi, frontend, syncService]; // fargate service configurations
+    const fargateServices = [explorerApi, syncService]; // fargate service configurations
     explorerApiPrivate.hostname
       ? fargateServices.push(explorerApiPrivate)
       : null;
@@ -145,6 +130,17 @@ export class ExplorerStack extends cdk.Stack {
         usCertificate: usCert.certificate,
         zone,
       });
+    });
+
+    const frontendBucket = new S3Frontend(this, `Explorer Frontend Bucket`, {
+      bucketName: `${explorer.envName}-${explorer.name}-frontend`.toLowerCase(),
+      zoneName: zone.zoneName,
+      zone: zone,
+      repo: explorer.git.repository,
+      repoOwner: explorer.git.owner,
+      repoBranch: explorer.git.branch,
+      gitTokenSecretPath: explorer.git.token,
+      account: this.account,
     });
   }
 }

@@ -1,0 +1,47 @@
+name: Security Scans
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+      - staging
+  workflow_dispatch:
+    inputs:
+      url:
+        default: https://explorer-api.testnet.polygon-nightfall.technology/
+        required: true
+        type: choice
+        description: What to scan
+        options:
+          - https://explorer.testnet.polygon-nightfall.technology/
+          - https://explorer-api.testnet.polygon-nightfall.technology/
+jobs:
+  zap_scan:
+    strategy:
+      matrix:
+        url:
+          [
+            "https://explorer.testnet.polygon-nightfall.technology/",
+            "https://explorer-api.testnet.polygon-nightfall.technology/",
+          ]
+    runs-on: ubuntu-latest
+    name: Scan the webapplication
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+      - name: seturl
+        id: seturl
+        run: |
+          MAYBE_URL=${{ github.event.inputs.url }}
+          URL=${MAYBE_URL:-${{ matrix.url }}}
+          echo "::set-output name=url::${URL}"
+      - name: ZAP Scan
+        uses: zaproxy/action-full-scan@v0.4.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          docker_name: "owasp/zap2docker-stable"
+          target: ${{ steps.seturl.outputs.url }}
+          rules_file_name: ".zap/rules.tsv"
+          cmd_options: "-a"
