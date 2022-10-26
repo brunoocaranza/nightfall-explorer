@@ -25,7 +25,7 @@ const SearchNotFound = () => {
             </div>
 
             <div className="btn-group">
-                <button onClick={() => navigate(-1)} className="btn-light">
+                <button aria-label={t("Go Back")} onClick={() => navigate(-1)} className="btn-light">
                     <IconArrowLeft />
 
                     {t("Go back")}

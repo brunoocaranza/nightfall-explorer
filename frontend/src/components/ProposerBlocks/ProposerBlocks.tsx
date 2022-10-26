@@ -24,7 +24,7 @@ const ProposerBlocks = ({ proposer }: IProposerBlocksProps) => {
 
     const page = getQueryParam(searchParams, "page", "1");
     const direction = getQueryParam(searchParams, "direction", "desc");
-    const column = getQueryParam(searchParams, "column", "timeBlockL2");
+    const column = getQueryParam(searchParams, "column", BLOCK_NUMBER_L2);
     const badBlocks = getQueryParam(searchParams, "badBlocks", 0);
 
     const [sortDirection, setSortDirection] = useState<ISortDirection>({
@@ -78,7 +78,7 @@ const ProposerBlocks = ({ proposer }: IProposerBlocksProps) => {
             <div className="grid grid-cols-1 md:grid-cols-2 justify-items-left">
                 <div className="flex justify-between mb-4">
                     <h2 className="text-3xl font-semibold">{t("Blocks")}</h2>
-                    <button className="btn-white px-3 py-4 h-0 md:hidden" onClick={() => sortBy("blockNumberL2")}>
+                    <button aria-label={t("Sort ASC/DESC")} className="btn-white px-3 py-4 h-0 md:hidden" onClick={() => sortBy(BLOCK_NUMBER_L2)}>
                         <IconArrowDownBold className={classNames({ "rotate-180": sortDirection[BLOCK_NUMBER_L2] === "desc" })} />
                     </button>
                 </div>
@@ -91,7 +91,7 @@ const ProposerBlocks = ({ proposer }: IProposerBlocksProps) => {
                 <table className="table-fixed">
                     <thead className="hidden w-full md:table-header-group">
                         <tr>
-                            <th onClick={() => sortBy("blockNumberL2")}>
+                            <th onClick={() => sortBy(BLOCK_NUMBER_L2)}>
                                 {t("Block")}
                                 <IconArrowDownBold
                                     className={classNames("inline align-baseline ml-2", {
@@ -101,7 +101,7 @@ const ProposerBlocks = ({ proposer }: IProposerBlocksProps) => {
                             </th>
                             <th>{t("Block Hash")}</th>
                             <th>{t("Number of Transactions")}</th>
-                            <th onClick={() => sortBy("timeBlockL2")}>
+                            <th onClick={() => sortBy(TIME_BLOCK_L2)}>
                                 {t("Time")}
                                 <IconArrowDownBold
                                     className={classNames("inline align-baseline ml-2", {

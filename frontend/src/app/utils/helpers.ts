@@ -30,7 +30,7 @@ const redirectPath = (path: string, param: string, challenged: boolean | undefin
     return `${replacePath(path, param)}${challenged ? "?challenged=1" : ""}`;
 };
 
-const env = (variable: ENVTypeNames) => {
+const env = (variable: ENVTypeNames): string => {
     const envs: ENVType = {
         APP_NAME: process.env.APP_NAME,
         APP_URL: process.env.APP_URL,

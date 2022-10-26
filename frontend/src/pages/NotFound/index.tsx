@@ -14,7 +14,7 @@ const NotFound = () => {
                 <p className="text-xl font-normal text-gray-400">{t("Sorry, the page you’re looking for doesn’t exist or has been removed.")}</p>
             </div>
             <div className="btn-group">
-                <button onClick={() => navigate(-2)} className="btn-light">
+                <button aria-label={t("Go back")} onClick={() => navigate(-2)} className="btn-light">
                     <IconArrowLeft />
 
                     {t("Go back")}

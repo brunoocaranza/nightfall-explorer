@@ -19,7 +19,7 @@ const ChallengedBlocks = () => {
 
     const page = getQueryParam(searchParams, "page", "1");
     const direction = getQueryParam(searchParams, "direction", "desc");
-    const column = getQueryParam(searchParams, "column", "timeBlockL2");
+    const column = getQueryParam(searchParams, "column", BLOCK_NUMBER_L2);
 
     const [sortDirection, setSortDirection] = useState<ISortDirection>({
         [BLOCK_NUMBER_L2]: column === BLOCK_NUMBER_L2 ? direction : "desc",
@@ -51,7 +51,7 @@ const ChallengedBlocks = () => {
                 <table className="w-full table-fixed">
                     <thead className="hidden w-full md:table-header-group">
                         <tr>
-                            <th onClick={() => sortBy("blockNumberL2")}>
+                            <th onClick={() => sortBy(BLOCK_NUMBER_L2)}>
                                 {t("Block")}
                                 <IconArrowDownBold
                                     className={classNames("inline align-baseline ml-2", {
@@ -62,7 +62,7 @@ const ChallengedBlocks = () => {
                             <th>{t("Block Hash")}</th>
                             <th>{t("Proposer Address")}</th>
                             <th>{t("Number of Transactions")}</th>
-                            <th onClick={() => sortBy("timeBlockL2")}>
+                            <th onClick={() => sortBy(TIME_BLOCK_L2)}>
                                 {t("Time")}
                                 <IconArrowDownBold
                                     className={classNames("inline align-baseline ml-2", {
