@@ -9,11 +9,13 @@ interface ISearchSelect {
     searchSelected: (item: ISearchValue) => void;
 }
 
-const typeName: { block_l1: string; block: string; challenged_block: string; challenged_block_l1: string } = {
+const typeName: { block_l1: string; block: string; transaction: string; proposer: string; challenged_block: string; challenged_block_l1: string } = {
     block_l1: "ETH Block",
     block: "Nightfall Block",
     challenged_block: "Nightfall Bad Block",
     challenged_block_l1: "ETH Bad Block",
+    transaction: "",
+    proposer: "",
 };
 
 const SearchSelect = ({ data, searchSelected, submittedTerm }: ISearchSelect) => {

@@ -11,7 +11,7 @@ const queryClient = new QueryClient({
         onError: (error) => {
             const status = error?.response?.status;
 
-            if (status === 429) {
+            if (status === 403) {
                 return window.location.replace(`/errors/${status}`);
             }
         },

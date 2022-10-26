@@ -16,6 +16,15 @@ const BlockInfo = ({ block, isChallenged }: IBlockProps) => {
 
     const [showMore, setShowMore] = useState<boolean>(false);
 
+    const challengedParamsRender = (item: IChallengedBlockResponse) => {
+        return (
+            <>
+                <InfoParam title={t("Error code")} value={item.invalidCode} />
+                <InfoParam title={t("Error message")} value={item.invalidMessage} allowCopy />
+            </>
+        );
+    };
+
     return (
         <ItemInfo>
             <InfoParam title={t("Block hash")} titleInfo={t("Polygon Nightfall block hash")} value={block.blockHash} allowCopy />
@@ -27,12 +36,7 @@ const BlockInfo = ({ block, isChallenged }: IBlockProps) => {
                 value={convertTimestampToUTC(block.timeBlockL2)}
             />
 
-            {isChallenged && (
-                <>
-                    <InfoParam title={t("Error code")} value={block.invalidCode} />
-                    <InfoParam title={t("Error message")} value={block.invalidMessage} allowCopy />
-                </>
-            )}
+            {isChallenged && challengedParamsRender(block as IChallengedBlockResponse)}
 
             {showMore && (
                 <>
@@ -63,5 +67,4 @@ const BlockInfo = ({ block, isChallenged }: IBlockProps) => {
         </ItemInfo>
     );
 };
-
 export default BlockInfo;

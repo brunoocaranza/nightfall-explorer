@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../axios";
 
 const fetchCheckNetwork = () => {
-    return axiosInstance.get("/health/network").then((response) => response.data);
+    return axiosInstance.get("/health/network");
 };
 
 export const useCheckNetwork = () => {

@@ -52,7 +52,7 @@ const LatestBlocks = ({ scrollToInput }: ILatestBlocksProps) => {
         <div className="container mx-auto mt-16 max-w-7xl w-11/12 xl:w-full">
             <div className="flex justify-between">
                 <h2 className="mb-7 text-3xl font-semibold">{t("Latest blocks")}</h2>
-                <button className="btn-white px-3 py-4 h-0 md:hidden" onClick={() => sortBy("blockNumberL2")}>
+                <button aria-label={t("Sort ASC/DESC")} className="btn-white px-3 py-4 h-0 md:hidden" onClick={() => sortBy("blockNumberL2")}>
                     <IconArrowDownBold className={classNames({ "rotate-180": sortDirection[BLOCK_NUMBER_L2] === "desc" })} />
                 </button>
             </div>

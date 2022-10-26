@@ -18,7 +18,7 @@ const ServerError = () => {
             message: t("Sorry, we are trying to resolve problem, try again in few minutes."),
         };
 
-        if (status === "429") {
+        if (status === "403") {
             content = {
                 title: t("Too many requests"),
                 subtitle: t("You made a lot of requests :("),
@@ -38,7 +38,7 @@ const ServerError = () => {
                 </div>
 
                 <div className="btn-group">
-                    <button onClick={() => refresh()} className="btn btn-primary">
+                    <button aria-label={t("Go back")} onClick={() => refresh()} className="btn btn-primary">
                         {t("Try to go back")}
                     </button>
                 </div>

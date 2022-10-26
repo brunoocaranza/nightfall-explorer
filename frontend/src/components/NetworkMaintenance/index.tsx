@@ -1,7 +1,7 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import IconInfo from "jsx:../../assets/images/icons/info.svg";
 import IconCloseBlue from "jsx:../../assets/images/icons/close-blue.svg";
-import { useState } from "react";
 
 const NetworkMaintenance = () => {
     const { t } = useTranslation();
@@ -16,11 +16,11 @@ const NetworkMaintenance = () => {
     return (
         <>
             {!isClosed && (
-                <div className="bg-white py-6">
+                <div className="bg-white px-3 py-6">
                     <div className="container flex flex-row mx-auto justify-between max-w-7xl text-sm">
                         <div className="flex">
-                            <IconInfo className="w-4 mr-5 fill-blue-500" />
-                            <div>
+                            <IconInfo className="w-12 md:w-6 lg:w-4 fill-blue-500" />
+                            <div className="ml-5">
                                 <h4 className="font-bold mb-2">{t("Network is currently under maintenance")}</h4>
                                 <p>
                                     {t(
@@ -29,7 +29,7 @@ const NetworkMaintenance = () => {
                                 </p>
                             </div>
                         </div>
-                        <button className="h-fit p-0 m-0 btn-none" onClick={close}>
+                        <button aria-label={t("Close")} className="h-fit p-0 m-0 btn-none" onClick={close}>
                             <IconCloseBlue />
                         </button>
                     </div>
