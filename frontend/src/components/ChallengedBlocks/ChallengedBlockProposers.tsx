@@ -10,7 +10,7 @@ import { useSearchParams } from "react-router-dom";
 import { getQueryParam } from "../../app/utils/helpers";
 import { useProposerListQuery } from "../../app/query/proposer/useProposerListQuery";
 import IconArrowDownBold from "jsx:../../assets/images/icons/arrow-down-bold.svg";
-import { BAD_BLOCKS, GOOD_BLOCKS, ISortDirectionProposer, SortByProposerTypes } from "../../app/consts/sort";
+import { BAD_BLOCKS, BLOCK_NUMBER_L2, GOOD_BLOCKS, ISortDirectionProposer, SortByProposerTypes } from "../../app/consts/sort";
 
 import "./ChallengedBlockProposers.scss";
 
@@ -51,6 +51,28 @@ const ChallengedBlockProposers = () => {
         setSearchParams({ page, direction: newSortDirection, column: sortName });
     };
 
+    const sortByMd = (sortName: SortByProposerTypes, newSortDirection: string) => {
+        setSortDirection({ ...sortDirection, [sortName]: newSortDirection });
+
+        setSearchParams({ page, direction: newSortDirection, column: sortName });
+    };
+
+    const Labels = {
+        [GOOD_BLOCKS]: t("Good Blocks"),
+        [BAD_BLOCKS]: t("Bad Blocks"),
+    };
+
+    const sortList: Array<{ value: string; label: string }> = [
+        {
+            value: GOOD_BLOCKS,
+            label: Labels[GOOD_BLOCKS],
+        },
+        {
+            value: BAD_BLOCKS,
+            label: Labels[BAD_BLOCKS],
+        },
+    ];
+
     return (
         <div>
             <div className="grid">
@@ -61,11 +83,32 @@ const ChallengedBlockProposers = () => {
                         onChange={(items: any) => setProposer(items)}
                         placeholder={t("Filter by proposer")}
                         isMulti
-                        className="react-select-container"
-                        classNamePrefix="react-select"
+                        classNamePrefix="gray-small-select"
                         isOptionDisabled={() => proposer.length >= 10}
                     />
                 </div>
+            </div>
+
+            <div className="flex justify-between mb-4">
+                <div className="w-48 md:hidden">
+                    <Select
+                        options={sortList}
+                        value={{ label: Labels[column], value: column }}
+                        onChange={(selectedItem: any) => {
+                            sortByMd(selectedItem.value, direction);
+                        }}
+                        isSearchable={false}
+                        classNamePrefix="classic-select"
+                        placeholder={t("Sort by")}
+                    />
+                </div>
+                <button
+                    aria-label={t("Sort ASC/DESC")}
+                    className="btn-white px-3 py-4 h-0 md:hidden"
+                    onClick={() => sortByMd(column, direction === "asc" ? "desc" : "asc")}
+                >
+                    <IconArrowDownBold className={classNames({ "rotate-180": direction === "desc" })} />
+                </button>
             </div>
 
             <div className="nf-table table-cb-proposers mb-20">

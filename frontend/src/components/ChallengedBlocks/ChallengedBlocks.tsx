@@ -47,6 +47,11 @@ const ChallengedBlocks = () => {
 
     return (
         <div>
+            <div className="flex justify-end mb-4">
+                <button aria-label={t("Sort ASC/DESC")} className="btn-white px-3 py-4 h-0 md:hidden" onClick={() => sortBy(BLOCK_NUMBER_L2)}>
+                    <IconArrowDownBold className={classNames({ "rotate-180": sortDirection[BLOCK_NUMBER_L2] === "desc" })} />
+                </button>
+            </div>
             <div className="nf-table table-blocks mb-20">
                 <table className="w-full table-fixed">
                     <thead className="hidden w-full md:table-header-group">
