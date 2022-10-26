@@ -11,7 +11,7 @@ import { useSearchParams } from "react-router-dom";
 const ChallengedBlock = () => {
     const { t } = useTranslation();
     const [searchParams, setSearchParams] = useSearchParams();
-    const [tab, setTab] = useState<ChallengedBlockTabs>("proposers"); // TODO challenged-blocks
+    const [tab, setTab] = useState<ChallengedBlockTabs>("challenged-blocks");
 
     useEffect(() => {
         resetQuery();
