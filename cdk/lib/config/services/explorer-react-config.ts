@@ -33,5 +33,11 @@ export const frontend: FrontendS3Config = {
     L1_EXPLORER_URL: {
       value: `${process.env.L1_EXPLORER_URL}`,
     },
+    MATOMO_URL: {
+      value: `${process.env.MATOMO_URL}`,
+    },
+    MATOMO_SITE_ID: {
+      value: `${process.env.MATOMO_SITE_ID}`,
+    },
   },
 };
