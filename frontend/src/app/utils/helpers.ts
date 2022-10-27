@@ -1,17 +1,31 @@
+import { RefObject } from "react";
 import { ENVType, ENVTypeNames } from "../consts/env";
 import moment from "moment/moment";
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
-import { RefObject } from "react";
+import { createInstance } from "@datapunt/matomo-tracker-react";
 
 const LIMIT_PER_PAGE = 10;
 
 const init = () => {
-    // Sentry.init({
-    //     dsn: env("SENTRY_DSN"),
-    //     integrations: [new BrowserTracing()],
-    //     tracesSampleRate: 1.0,
-    // });
+    if (env("SENTRY_DSN") !== "") {
+        Sentry.init({
+            dsn: env("SENTRY_DSN"),
+            integrations: [new BrowserTracing()],
+            tracesSampleRate: 1.0,
+        });
+    }
+};
+
+const matomoInstance = () => {
+    if (env("MATOMO_URL") !== "" && env("MATOMO_SITE_ID") !== "") {
+        return createInstance({
+            urlBase: env("MATOMO_URL"),
+            siteId: Number(env("MATOMO_SITE_ID")),
+        });
+    }
+
+    return null;
 };
 
 const reduceHash = (hash: string): string => {
@@ -30,14 +44,20 @@ const redirectPath = (path: string, param: string, challenged: boolean | undefin
     return `${replacePath(path, param)}${challenged ? "?challenged=1" : ""}`;
 };
 
+const replaceUndefined = (variable: string | undefined): string => {
+    return variable !== undefined ? variable : "";
+};
+
 const env = (variable: ENVTypeNames): string => {
     const envs: ENVType = {
-        APP_NAME: process.env.APP_NAME,
-        APP_URL: process.env.APP_URL,
-        API_URL: process.env.API_URL,
-        NET_URLS: process.env.NET_URLS,
-        SENTRY_DSN: process.env.SENTRY_DSN,
-        L1_EXPLORER_URL: process.env.L1_EXPLORER_URL,
+        APP_NAME: replaceUndefined(process.env.APP_NAME),
+        APP_URL: replaceUndefined(process.env.APP_URL),
+        API_URL: replaceUndefined(process.env.API_URL),
+        NET_URLS: replaceUndefined(process.env.NET_URLS),
+        SENTRY_DSN: replaceUndefined(process.env.SENTRY_DSN),
+        L1_EXPLORER_URL: replaceUndefined(process.env.L1_EXPLORER_URL),
+        MATOMO_URL: replaceUndefined(process.env.MATOMO_URL),
+        MATOMO_SITE_ID: replaceUndefined(process.env.MATOMO_SITE_ID),
     };
 
     return envs[variable];
@@ -57,4 +77,4 @@ const scrollToRef = (ref: RefObject<HTMLDivElement>) => {
     }
 };
 
-export { init, reduceHash, LIMIT_PER_PAGE, getQueryParam, replacePath, env, convertTimestampToUTC, scrollToRef, redirectPath };
+export { init, reduceHash, LIMIT_PER_PAGE, getQueryParam, replacePath, env, convertTimestampToUTC, scrollToRef, redirectPath, matomoInstance };
