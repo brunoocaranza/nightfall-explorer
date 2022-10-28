@@ -96,7 +96,7 @@ const Search = ({ miniForm }: ISearchProps) => {
                 )}
             />
             {!isValid && (
-                <div className="flex items-center mt-2 text-red-600" aria-label={t("Search")}>
+                <div className="flex items-center mt-2 text-red-600">
                     <IconDanger className="mr-2 w-4" /> {t("Please enter value")}
                 </div>
             )}
@@ -106,7 +106,7 @@ const Search = ({ miniForm }: ISearchProps) => {
 
             <div className="absolute right-3 top-2 flex items-center">
                 {isLoading && <IconLoading className="animate-spin mr-4" />}
-                <button type="submit" className=" p-3 rounded-2xl bg-primary-500 text-white font-bold md:right-7 md:p-5">
+                <button type="submit" className="p-3 rounded-2xl bg-primary-500 text-white font-bold md:right-7 md:p-5" aria-label={t("Search")}>
                     <span className="hidden md:block">{t("Search")}</span>
                     <IconSearchWhite className="block md:hidden" />
                 </button>
