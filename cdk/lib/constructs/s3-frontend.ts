@@ -63,11 +63,6 @@ export class S3Frontend extends Construct {
           originOverride: true,
         },
         securityHeadersBehavior: {
-          contentSecurityPolicy: {
-            contentSecurityPolicy:
-              "default-src https:; style-src 'unsafe-inline';",
-            override: true,
-          },
           contentTypeOptions: { override: true },
           frameOptions: {
             frameOption: cloudfront.HeadersFrameOption.DENY,
