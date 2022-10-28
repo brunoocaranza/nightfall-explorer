@@ -51,8 +51,8 @@ http://localhost:3000/api/docs
 
 - [.github](.github) - PR template && github workflows (sonarcube, tests, owasp scanner)
 - [husky](husky) - Precommit script which runs lint and tests
-- [db-seed](/db-seed) - Script for creating fake data for testing
-- [artillery](/artillery) - Artillery JS script for testing
+- [db-seed](db-seed) - Script for creating fake data for testing
+- [artillery](artillery) - Artillery JS script for testing
 - [src](src)
   - api - business logic, controllers etc.
   - config - database, winston logger, swagger, env variables and application configuration
