@@ -81,9 +81,7 @@ export class CiCdConstruct extends Construct {
             commands: [
               `cd ${service.projectFolderName}`,
               "docker pull $BASE_REPO_URI:node-alpine",
-              "docker pull $BASE_REPO_URI:nginx-alpine",
               "docker tag $BASE_REPO_URI:node-alpine node:16.17.0-alpine",
-              "docker tag $BASE_REPO_URI:nginx-alpine nginx:alpine",
               `docker build -t $ECR_REPO_URI:$TAG .`,
               "docker push $ECR_REPO_URI:$TAG",
               "cd ..",

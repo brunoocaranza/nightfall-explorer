@@ -32,7 +32,8 @@ export class S3Frontend extends Construct {
       bucketName: props.bucketName,
       publicReadAccess: false,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-      removalPolicy: RemovalPolicy.RETAIN,
+      autoDeleteObjects: true,
+      removalPolicy: RemovalPolicy.DESTROY,
       accessControl: s3.BucketAccessControl.PRIVATE,
       objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
       encryption: s3.BucketEncryption.S3_MANAGED,
@@ -57,13 +58,14 @@ export class S3Frontend extends Construct {
           accessControlAllowCredentials: false,
           accessControlAllowHeaders: ["*"],
           accessControlAllowMethods: ["GET"],
-          accessControlAllowOrigins: ["*"],
+          accessControlAllowOrigins: [siteDomain],
           accessControlMaxAge: Duration.seconds(600),
           originOverride: true,
         },
         securityHeadersBehavior: {
           contentSecurityPolicy: {
-            contentSecurityPolicy: "default-src https: style-src 'unsafe-inline';",
+            contentSecurityPolicy:
+              "default-src https: style-src 'unsafe-inline';",
             override: true,
           },
           contentTypeOptions: { override: true },
@@ -106,6 +108,13 @@ export class S3Frontend extends Construct {
         defaultRootObject: "index.html",
         domainNames: [siteDomain],
         certificate,
+        errorResponses: [
+          {
+            httpStatus: 404,
+            responseHttpStatus: 200,
+            responsePagePath: "/index.html",
+          },
+        ],
         defaultBehavior: {
           origin: new cloudfrontOrigins.S3Origin(siteBucket, {
             originAccessIdentity: cloudfrontOAI,
