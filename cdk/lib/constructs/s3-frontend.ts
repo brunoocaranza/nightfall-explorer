@@ -65,7 +65,7 @@ export class S3Frontend extends Construct {
         securityHeadersBehavior: {
           contentSecurityPolicy: {
             contentSecurityPolicy:
-              "default-src https: style-src 'unsafe-inline';",
+              "default-src https:; style-src 'unsafe-inline';",
             override: true,
           },
           contentTypeOptions: { override: true },
