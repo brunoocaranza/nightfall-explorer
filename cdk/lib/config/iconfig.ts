@@ -21,9 +21,7 @@ export interface ServiceConfig {
   autoScaling?: {
     minCapacity: number;
     maxCapacity: number;
-    cpuUtilization: {
-      target: number;
-    };
+    scaleOnRequestCountNumber: number;
   };
   ecr: {
     repositoryName: string;

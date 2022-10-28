@@ -139,20 +139,6 @@ export class FargateServiceConstruct extends Construct {
       vpcSubnets: { subnets: appSubnets },
     });
 
-    if (serviceConfig.autoScaling) {
-      const scaling = this.service.autoScaleTaskCount({
-        minCapacity: serviceConfig.autoScaling.minCapacity,
-        maxCapacity: serviceConfig.autoScaling.maxCapacity,
-      });
-
-      scaling.scaleOnCpuUtilization(`${serviceConfig.hostname}-cpu-scaling`, {
-        targetUtilizationPercent:
-          serviceConfig.autoScaling.cpuUtilization.target,
-        scaleInCooldown: Duration.seconds(60),
-        scaleOutCooldown: Duration.seconds(60),
-      });
-    }
-
     const serviceTargetGroup = httpsListener.addTargets(`target-group`, {
       port: 80,
       targetGroupName: `${envName}-${serviceConfig.hostname}`,
@@ -166,5 +152,19 @@ export class FargateServiceConstruct extends Construct {
       ],
     });
     securityGroup.connections.allowFrom(alb, Port.tcp(80));
+
+    if (serviceConfig.autoScaling) {
+      const scaling = this.service.autoScaleTaskCount({
+        minCapacity: serviceConfig.autoScaling.minCapacity,
+        maxCapacity: serviceConfig.autoScaling.maxCapacity,
+      });
+
+      scaling.scaleOnRequestCount(`${serviceConfig.hostname}-cpu-scaling`, {
+        requestsPerTarget: serviceConfig.autoScaling.scaleOnRequestCountNumber,
+        scaleInCooldown: Duration.seconds(60),
+        scaleOutCooldown: Duration.seconds(300),
+        targetGroup: serviceTargetGroup,
+      });
+    }
   }
 }

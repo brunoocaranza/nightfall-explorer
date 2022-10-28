@@ -11,6 +11,7 @@ import { frontend, zone } from "../config";
 import { CiCdS3Frontend } from "./cicd-s3-front";
 import * as cloudfrontOrigins from "aws-cdk-lib/aws-cloudfront-origins";
 export interface S3ReactProps {
+  envName: string;
   bucketName: string;
   zoneName: string;
   zone: IHostedZone;
@@ -52,7 +53,7 @@ export class S3Frontend extends Construct {
       this,
       "ResponseHeadersPolicy",
       {
-        responseHeadersPolicyName: "explorer-response-policy",
+        responseHeadersPolicyName: `${props.envName}-explorer-response-header`,
         comment: "A default policy",
         corsBehavior: {
           accessControlAllowCredentials: false,

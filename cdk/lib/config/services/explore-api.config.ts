@@ -25,11 +25,8 @@ export const explorerApi: ServiceConfig = {
     maxCapacity: process.env.API_AUTOSCALING_MAX_CAPACITY
       ? +process.env.API_AUTOSCALING_MAX_CAPACITY
       : 2,
-    cpuUtilization: {
-      target: process.env.API_AUTOSCALING_CPU_UTILIZATION
-        ? +process.env.API_AUTOSCALING_CPU_UTILIZATION
-        : 50,
-    },
+    scaleOnRequestCountNumber:
+      +process.env.API_AUTOSCALING_REQUEST_COUNT_NUMBER!,
   },
   ecr: {
     repositoryName: process.env.API_ECR_REPOSITORY!,
