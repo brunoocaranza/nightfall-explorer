@@ -15,7 +15,7 @@ const Proposer = () => {
     const { t } = useTranslation();
     const { hash } = useParams();
 
-    const { data: proposerData, isLoading: isLoadingProposer, isFetching: isFetchingProposer } = useProposerInfoQuery(String(hash));
+    const { data: proposerData, isFetching: isFetchingProposer } = useProposerInfoQuery(String(hash));
 
     const renderLoading = () => {
         return (
@@ -55,7 +55,7 @@ const Proposer = () => {
     };
 
     const render = () => {
-        if (isLoadingProposer || isFetchingProposer) {
+        if (isFetchingProposer) {
             return renderLoading();
         }
 

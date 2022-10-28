@@ -13,6 +13,7 @@ import IconClose from "jsx:../../assets/images/icons/close.svg";
 const Header = () => {
     const { t } = useTranslation();
 
+    // TODO Improve networks
     const urls = env("NET_URLS")?.split(",");
 
     const networks = urls.map((network: string) => {

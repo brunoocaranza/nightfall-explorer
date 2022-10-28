@@ -60,5 +60,5 @@ export interface IChallengedBlocksResponse {
     hasNextPage: boolean;
     prevPage: number | null;
     nextPage: number | null;
-    docs: Array<ILatestBlock>;
+    docs: Array<IChallengedBlock>;
 }

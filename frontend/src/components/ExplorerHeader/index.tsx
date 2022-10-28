@@ -2,14 +2,14 @@ import { useTranslation } from "react-i18next";
 import { useStatsBlockQuery } from "../../app/query/stats/useStatsBlockQuery";
 import { useStatsTransactionQuery } from "../../app/query/stats/useStatsTransactionQuery";
 import { useStatsAverageBlockCreationQuery } from "../../app/query/stats/useStatsAverageBlockCreationQuery";
+import { useStatsPendingTransaction } from "../../app/query/stats/useStatsPendingTransactionQuery";
+import { IStatsBlockResponse, IStatsTransactionResponse } from "../../app/consts/stats";
 import IconBlockCreated from "jsx:../../assets/images/icons/blocks.svg";
 import IconTransactions from "jsx:../../assets/images/icons/transactions.svg";
-import IconPendingTransactions from "jsx:../../assets/images/icons/pending-transactions.svg";
 import IconAvgBlockCreation from "jsx:../../assets/images/icons/avg-block-creation.svg";
-import { useStatsPendingTransaction } from "../../app/query/stats/useStatsPendingTransactionQuery";
+import IconPendingTransactions from "jsx:../../assets/images/icons/pending-transactions.svg";
 
 import "./ExplorerHeader.scss";
-import { IStatsBlockResponse, IStatsTransactionResponse } from "../../app/consts/stats";
 
 const ExplorerHeader = () => {
     const { t } = useTranslation();

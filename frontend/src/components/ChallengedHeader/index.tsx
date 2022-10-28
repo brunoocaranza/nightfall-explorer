@@ -1,8 +1,7 @@
 import { useStatsChallengedQuery } from "../../app/query/stats/useStatsChallengedQuery";
+import { useTranslation } from "react-i18next";
 import IconBlockCreated from "jsx:../../assets/images/icons/blocks.svg";
 import IconChallengedBlocks from "jsx:../../assets/images/icons/proposer-challenged-blocks.svg";
-
-import { useTranslation } from "react-i18next";
 
 const ChallengedHeader = () => {
     const { t } = useTranslation();

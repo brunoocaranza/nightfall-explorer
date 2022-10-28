@@ -8,8 +8,8 @@ import { getQueryParam } from "../../app/utils/helpers";
 import BlockSwitch from "../Swich/BlockSwitch";
 import TableBlocks from "../TableBlocks";
 import { Pagination } from "../Pagination";
-import IconArrowDownBold from "jsx:../../assets/images/icons/arrow-down-bold.svg";
 import { BLOCK_NUMBER_L2, ISortDirection, SortByTypes, TIME_BLOCK_L2 } from "../../app/consts/sort";
+import IconArrowDownBold from "jsx:../../assets/images/icons/arrow-down-bold.svg";
 
 import "./ProposerBlocks.scss";
 

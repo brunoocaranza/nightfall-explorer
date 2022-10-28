@@ -12,6 +12,6 @@ export interface IStatsBlockResponse {
 }
 
 export interface IStatsChallengedBlocks {
-    blockPercentage: any;
-    blocksCount: any;
+    blockPercentage: number;
+    blocksCount: number;
 }

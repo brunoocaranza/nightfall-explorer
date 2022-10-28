@@ -2,17 +2,27 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import Select from "react-select";
+import { useSearchParams } from "react-router-dom";
 import { useChallengedBlocksQuery } from "../../app/query/block/useChallengedBlocksQuery";
 import TableProposers from "./TableProposers";
 import { Pagination } from "../Pagination";
 import { IPageChange } from "../../app/consts/page";
-import { useSearchParams } from "react-router-dom";
 import { getQueryParam } from "../../app/utils/helpers";
 import { useProposerListQuery } from "../../app/query/proposer/useProposerListQuery";
+import { BAD_BLOCKS, GOOD_BLOCKS, ISortDirectionProposer, SortByProposerTypes } from "../../app/consts/sort";
 import IconArrowDownBold from "jsx:../../assets/images/icons/arrow-down-bold.svg";
-import { BAD_BLOCKS, BLOCK_NUMBER_L2, GOOD_BLOCKS, ISortDirectionProposer, SortByProposerTypes } from "../../app/consts/sort";
 
 import "./ChallengedBlockProposers.scss";
+import { IProposer } from "../../app/consts/proposer";
+
+interface ISortItem {
+    value: SortByProposerTypes;
+    label: string;
+}
+
+interface ILabelSortName {
+    [key: string]: string;
+}
 
 const ChallengedBlockProposers = () => {
     const { t } = useTranslation();
@@ -28,11 +38,11 @@ const ChallengedBlockProposers = () => {
         [BAD_BLOCKS]: column === BAD_BLOCKS ? direction : "desc",
     });
 
-    const [proposer, setProposer] = useState([]);
+    const [proposer, setProposer] = useState<Array<IProposer>>([]);
 
     const { isLoading, isError, error, data } = useChallengedBlocksQuery({
         page,
-        proposer: proposer.map((item: any) => item.value).join(","),
+        proposer: proposer.map((item: IProposer) => item.value).join(","),
         direction,
         column,
     });
@@ -57,12 +67,12 @@ const ChallengedBlockProposers = () => {
         setSearchParams({ page, direction: newSortDirection, column: sortName });
     };
 
-    const Labels = {
+    const Labels: ILabelSortName = {
         [GOOD_BLOCKS]: t("Good Blocks"),
         [BAD_BLOCKS]: t("Bad Blocks"),
     };
 
-    const sortList: Array<{ value: string; label: string }> = [
+    const sortList: Array<ISortItem> = [
         {
             value: GOOD_BLOCKS,
             label: Labels[GOOD_BLOCKS],
@@ -80,7 +90,9 @@ const ChallengedBlockProposers = () => {
                     <Select
                         options={proposers}
                         value={proposer}
-                        onChange={(items: any) => setProposer(items)}
+                        onChange={(items: readonly IProposer[]) => {
+                            setProposer(items as Array<IProposer>);
+                        }}
                         placeholder={t("Filter by proposer")}
                         isMulti
                         classNamePrefix="gray-small-select"
@@ -94,8 +106,10 @@ const ChallengedBlockProposers = () => {
                     <Select
                         options={sortList}
                         value={{ label: Labels[column], value: column }}
-                        onChange={(selectedItem: any) => {
-                            sortByMd(selectedItem.value, direction);
+                        onChange={(selectedItem: ISortItem | null) => {
+                            if (selectedItem) {
+                                sortByMd(selectedItem.value, direction);
+                            }
                         }}
                         isSearchable={false}
                         classNamePrefix="classic-select"

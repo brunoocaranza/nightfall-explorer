@@ -24,18 +24,20 @@ const TableBlocks = ({ data, isLoading, isError, showProposer, challengedBlocks,
         }
 
         if (isError || !data || !Object.prototype.hasOwnProperty.call(data, "docs")) {
-            return renderError();
+            const tmpError = error as Error;
+
+            return renderError(tmpError.message ?? t("Error occurred, check url and try again!"));
         }
 
         if (data && data.docs.length === 0) {
             return renderEmptyResults();
         }
 
-        return renderList();
+        return renderList(data.docs);
     };
 
-    const renderList = () => {
-        return data.docs.map((item: ILatestBlock) => {
+    const renderList = (list: Array<ILatestBlock>) => {
+        return list.map((item: ILatestBlock) => {
             return (
                 <tr key={`${item.blockNumberL2}}`}>
                     <td>
@@ -64,11 +66,11 @@ const TableBlocks = ({ data, isLoading, isError, showProposer, challengedBlocks,
         });
     };
 
-    const renderError = () => {
+    const renderError = (message: string) => {
         return (
             <tr>
                 <td colSpan={5}>
-                    <p className="text-center error">{error?.message ?? t("Error occurred, check url and try again!")}</p>
+                    <p className="text-center error">{message}</p>
                 </td>
             </tr>
         );
