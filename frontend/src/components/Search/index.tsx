@@ -96,7 +96,7 @@ const Search = ({ miniForm }: ISearchProps) => {
                 )}
             />
             {!isValid && (
-                <div className="flex items-center mt-2 text-red-600">
+                <div className="flex items-center mt-2 text-red-600" aria-label={t("Search")}>
                     <IconDanger className="mr-2 w-4" /> {t("Please enter value")}
                 </div>
             )}

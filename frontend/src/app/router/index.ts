@@ -12,7 +12,6 @@ import {
 } from "./consts";
 
 import Landing from "../../pages/Landing";
-import NotFound from "../../pages/NotFound";
 import ServerError from "../../pages/ServerError";
 
 const Block = lazy(() => import("../../pages/Block"));
@@ -20,6 +19,7 @@ const SearchNotFound = lazy(() => import("../../pages/SearchNotFound"));
 const Transaction = lazy(() => import("../../pages/Transaction"));
 const Proposer = lazy(() => import("../../pages/Proposer"));
 const ChallengedBlock = lazy(() => import("../../pages/ChallengedBlock"));
+const NotFound = lazy(() => import("../../pages/NotFound"));
 
 interface IRouteList {
     [key: string]: RouteObject;
