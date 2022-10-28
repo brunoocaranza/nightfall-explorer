@@ -5,14 +5,12 @@ import {
   explorer,
   explorerApi,
   explorerApiPrivate,
-  frontend,
   syncService,
   zone,
 } from "../config";
 import { DnsAndCertificateConstruct } from "../constructs/dns-certificate-construct";
 import { VpcConstruct } from "../constructs/vpc-construct";
 import { ECSServiceGroup } from "../constructs/ecs-service-group";
-import { RedisConstruct } from "../constructs/elastic-cache";
 import { S3Frontend } from "../constructs/s3-frontend";
 /**
  * This stack is responsible for creating the infrastructure for the ECS services.
@@ -133,6 +131,7 @@ export class ExplorerStack extends cdk.Stack {
     });
 
     const frontendBucket = new S3Frontend(this, `Explorer Frontend Bucket`, {
+      envName: explorer.envName,
       bucketName: `${explorer.envName}-${explorer.name}-frontend`.toLowerCase(),
       zoneName: zone.zoneName,
       zone: zone,

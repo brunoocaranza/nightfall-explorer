@@ -23,19 +23,6 @@ export const explorerApiPrivate: ServiceConfig = {
       path: "/health",
     },
   },
-  autoScaling: {
-    minCapacity: process.env.API_PRIVATE_AUTOSCALING_MIN_CAPACITY
-      ? +process.env.API_PRIVATE_AUTOSCALING_MIN_CAPACITY
-      : 1,
-    maxCapacity: process.env.API_PRIVATE_AUTOSCALING_MAX_CAPACITY
-      ? +process.env.API_PRIVATE_AUTOSCALING_MAX_CAPACITY
-      : 2,
-    cpuUtilization: {
-      target: process.env.API_PRIVATE_AUTOSCALING_CPU_UTILIZATION
-        ? +process.env.API_PRIVATE_AUTOSCALING_CPU_UTILIZATION
-        : 50,
-    },
-  },
   ecr: {
     repositoryName: process.env.API_ECR_REPOSITORY!,
     tag: "latest",
