@@ -20,14 +20,16 @@ const TableProposers = ({ data, isLoading, isError, error, page }: ITableBlocks)
         }
 
         if (isError || !data || !Object.prototype.hasOwnProperty.call(data, "docs")) {
-            return renderError();
+            const tmpError = error as Error;
+
+            return renderError(tmpError.message ?? t("Error occurred, check url and try again!"));
         }
 
         if (data.docs.length === 0) {
             return renderEmptyResults();
         }
 
-        return renderList();
+        return renderList(data.docs);
     };
 
     const getPageIndex = (index: number) => {
@@ -42,8 +44,8 @@ const TableProposers = ({ data, isLoading, isError, error, page }: ITableBlocks)
         return `${amount} WEI`;
     };
 
-    const renderList = () => {
-        return data.docs.map((item: IChallengedBlock, index: number) => {
+    const renderList = (list: Array<IChallengedBlock>) => {
+        return list.map((item: IChallengedBlock, index: number) => {
             return (
                 <tr key={index}>
                     <td>
@@ -71,11 +73,11 @@ const TableProposers = ({ data, isLoading, isError, error, page }: ITableBlocks)
         });
     };
 
-    const renderError = () => {
+    const renderError = (message: string) => {
         return (
             <tr>
                 <td colSpan={5}>
-                    <p className="text-center">{error?.message ?? t("Error occurred, check url and try again!")}</p>
+                    <p className="text-center">{message}</p>
                 </td>
             </tr>
         );

@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import IconSearch from "jsx:../../assets/images/icons/search.svg";
-import IconSearchWhite from "jsx:../../assets/images/icons/search-white.svg";
-import IconDanger from "jsx:../../assets/images/icons/danger.svg";
-import { ISearchValue, useSearchMutation } from "../../app/query/useSearchMutation";
+import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
+import { ISearchValue, useSearchMutation } from "../../app/query/useSearchMutation";
 import routeList from "../../app/router";
 import { SEARCH_NOT_FOUND } from "../../app/router/consts";
 import { ResourceName, resourceNames } from "../../app/consts/resources";
 import { redirectPath } from "../../app/utils/helpers";
 import SearchSelect from "./SearchSelect";
-import classNames from "classnames";
+import IconSearch from "jsx:../../assets/images/icons/search.svg";
+import IconSearchWhite from "jsx:../../assets/images/icons/search-white.svg";
+import IconDanger from "jsx:../../assets/images/icons/danger.svg";
 import IconLoading from "jsx:../../assets/images/icons/loader.svg";
 
 import "./Search.scss";
@@ -39,7 +39,7 @@ const Search = ({ miniForm }: ISearchProps) => {
         } else {
             setSubmittedTerm(term);
 
-            mutate(term);
+            mutate();
         }
     };
 
@@ -52,7 +52,7 @@ const Search = ({ miniForm }: ISearchProps) => {
             const isDataArray = Array.isArray(data);
 
             if ((isDataArray && data.length === 1) || !isDataArray) {
-                const { value, type } = isDataArray ? data[0] : data;
+                const { value, type } = (isDataArray ? data[0] : data) as ISearchValue;
 
                 navigate(redirectPath(routeList[resourceNames[type]].path, value, isChallenged(type)));
             }

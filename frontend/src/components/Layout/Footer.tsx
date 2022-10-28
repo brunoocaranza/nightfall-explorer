@@ -15,20 +15,20 @@ const Footer = () => {
     const getLinks = () => {
         if (isLoading || !data) return null;
 
-        const blockUrl = env("L1_EXPLORER_URL");
+        const explorerUrl = env("L1_EXPLORER_URL");
         const shieldContract = data.find((item: IContracts) => item["shield"]);
         const stateContract = data.find((item: IContracts) => item["state"]);
 
         return (
             <>
                 {shieldContract && (
-                    <a href={`${blockUrl}/address/${shieldContract.shield}`} rel="noreferrer" className="mr-6" target="_blank">
+                    <a href={`${explorerUrl}/address/${shieldContract.shield}`} rel="noreferrer" className="mr-6" target="_blank">
                         {t("Shield Contract")}
                         <IconArrowLink className="w-3 h-3 ml-2 mt-[-6] inline" />
                     </a>
                 )}
                 {stateContract && (
-                    <a href={`${blockUrl}/address/${stateContract.state}`} rel="noreferrer" target="_blank">
+                    <a href={`${explorerUrl}/address/${stateContract.state}`} rel="noreferrer" target="_blank">
                         {t("State Contract")}
                         <IconArrowLink className="w-3 h-3 ml-2 mt-[-6] inline" />
                     </a>

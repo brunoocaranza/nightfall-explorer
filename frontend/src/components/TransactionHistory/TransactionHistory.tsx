@@ -4,6 +4,7 @@ import IconDeposit from "jsx:../../assets/images/icons/deposit.svg";
 import IconTransfer from "jsx:../../assets/images/icons/transfer.svg";
 import { ITransaction } from "../../app/consts/transactions";
 import { Link } from "react-router-dom";
+
 import "./TransactionHistory.scss";
 
 interface ITransactionHistory {

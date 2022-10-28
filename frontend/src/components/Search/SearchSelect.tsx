@@ -2,6 +2,7 @@ import { ISearchResponse, ISearchValue } from "../../app/query/useSearchMutation
 import React, { useEffect, useRef, useState } from "react";
 import { useKeyPress } from "../../app/hooks/useKeyPress";
 import classNames from "classnames";
+import { useTranslation } from "react-i18next";
 
 interface ISearchSelect {
     data: ISearchResponse | any;
@@ -9,21 +10,32 @@ interface ISearchSelect {
     searchSelected: (item: ISearchValue) => void;
 }
 
-const typeName: { block_l1: string; block: string; transaction: string; proposer: string; challenged_block: string; challenged_block_l1: string } = {
-    block_l1: "ETH Block",
-    block: "Nightfall Block",
-    challenged_block: "Nightfall Bad Block",
-    challenged_block_l1: "ETH Bad Block",
-    transaction: "",
-    proposer: "",
-};
+interface ITypeName {
+    block_l1: string;
+    block: string;
+    transaction: string;
+    proposer: string;
+    challenged_block: string;
+    challenged_block_l1: string;
+}
 
 const SearchSelect = ({ data, searchSelected, submittedTerm }: ISearchSelect) => {
+    const { t } = useTranslation();
+
     const enterPress = useKeyPress("Enter");
     const downPress = useKeyPress("ArrowDown");
     const upPress = useKeyPress("ArrowUp");
     const multipleRef = useRef(null);
     const [cursor, setCursor] = useState<number>(0);
+
+    const typeName: ITypeName = {
+        block_l1: t("ETH Block"),
+        block: t("Nightfall Block"),
+        challenged_block: t("Nightfall Bad Block"),
+        challenged_block_l1: t("ETH Bad Block"),
+        transaction: "",
+        proposer: "",
+    };
 
     useEffect(() => {
         if (downPress && cursor < data.length - 1) {

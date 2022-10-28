@@ -12,3 +12,8 @@ export interface IProposerInfoResponse {
     stats: IStats;
     isActive: boolean;
 }
+
+export interface IProposer {
+    label: string;
+    value: string;
+}
