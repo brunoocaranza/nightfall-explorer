@@ -23,6 +23,8 @@ class MongooseOptionsService implements MongooseOptionsFactory {
   }
 
   createMongooseOptions(): MongooseModuleOptions {
+    // docdb-tmp-stress12.cluster-cvcs3hq4x5r3.eu-central-1.docdb.amazonaws.com
+    // docdb-tmp-stress1.cluster-cvcs3hq4x5r3.eu-central-1.docdb.amazonaws.com
     const uri = `mongodb://${this.host}:${this.port}/${this.name}`;
 
     const mongooseOptions: MongooseModuleOptions = {
@@ -30,6 +32,8 @@ class MongooseOptionsService implements MongooseOptionsFactory {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       serverSelectionTimeoutMS: 5000,
+      replicaSet: 'rs0',
+      readPreference: 'secondaryPreferred',
     };
 
     /* istanbul ignore next */
