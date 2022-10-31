@@ -4,16 +4,6 @@ config:
     - duration: 10
       arrivalRate: 3 # num of virtual users arraving every second on average
       name: Warm up 
-    # - duration: 60
-    #   arrivalRate: 10 # num of virtual users arraving every second on average
-    #   name: Warm up 
-    # - duration: 60
-    #   arrivalRate: 10
-    #   name: 1st 
-    # - duration: 300
-    #   arrivalRate: 10
-    #   maxVusers: 50
-    #   name: 2nd 
   processor: ./processor.js
 
 scenarios:
