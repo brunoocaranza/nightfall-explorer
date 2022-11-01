@@ -10,7 +10,7 @@ export const configureApp = (app: INestApplication) => {
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-  if (process.env.NODE_ENV === 'Private') {
+  if (process.env.NODE_ENV === 'Private' || process.env.NODE_ENV === 'local') {
     app.enableCors();
   } else {
     const config = appConfiguration();
@@ -28,7 +28,7 @@ export const configureApp = (app: INestApplication) => {
   });
 
   // Swagger will not be available publicly
-  if (process.env.NODE_ENV === 'Private') setupSwagger(app);
+  if (process.env.NODE_ENV === 'Private' || process.env.NODE_ENV === 'local') setupSwagger(app);
 
   // Global error handler
   app.useGlobalFilters(new ExceptionHandler());
