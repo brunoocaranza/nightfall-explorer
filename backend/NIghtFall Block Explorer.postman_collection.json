@@ -40,7 +40,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/api/v1/block/59",
+					"raw": "http://localhost:3000/api/v1/block/150",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -50,7 +50,7 @@
 						"api",
 						"v1",
 						"block",
-						"59"
+						"150"
 					]
 				}
 			},
@@ -62,7 +62,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/api/v1/transaction/0x12c9a4b92a9b0957b2f54a81163a626a0f8ffbe74852f06242911bf1c87207b7",
+					"raw": "http://localhost:3000/api/v1/transaction/0xfb4705418879421fa2124b4d6d514d28ecf8a60ef584351930670bf7d3d01c55",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -72,7 +72,7 @@
 						"api",
 						"v1",
 						"transaction",
-						"0x12c9a4b92a9b0957b2f54a81163a626a0f8ffbe74852f06242911bf1c87207b7"
+						"0xfb4705418879421fa2124b4d6d514d28ecf8a60ef584351930670bf7d3d01c55"
 					]
 				}
 			},
@@ -84,7 +84,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/api/v1/search?q=0xBBB0ed659d7821b59bBFd1b6B79260051e5E9222",
+					"raw": "http://localhost:3000/api/v1/search?q=0xfcf6108a5ae94d012b6763f4872321ec07746a2f1fcecf62352c890e83c18b0f",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -97,13 +97,13 @@
 					],
 					"query": [
 						{
-							"key": "q",
-							"value": "0xBBB0ed659d7821b59bBFd1b6B79260051e5E9222"
-						},
-						{
 							"key": "badBlocks",
 							"value": "true",
 							"disabled": true
+						},
+						{
+							"key": "q",
+							"value": "0xfcf6108a5ae94d012b6763f4872321ec07746a2f1fcecf62352c890e83c18b0f"
 						}
 					]
 				}
@@ -162,7 +162,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/api/v1/block?limit=10&page=1&sortDirection=desc&sortColumn=blockNumberL2&proposer=0xCaE0ed659d7821b59bBFd1b6B79260051e5E9111&badBlocks=true",
+					"raw": "http://localhost:3000/api/v1/block?limit=10&page=1&sortDirection=desc&sortColumn=blockNumberL2",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -192,11 +192,13 @@
 						},
 						{
 							"key": "proposer",
-							"value": "0xCaE0ed659d7821b59bBFd1b6B79260051e5E9111"
+							"value": "0xCaE0ed659d7821b59bBFd1b6B79260051e5E9111",
+							"disabled": true
 						},
 						{
 							"key": "badBlocks",
-							"value": "true"
+							"value": "true",
+							"disabled": true
 						}
 					]
 				}
@@ -227,28 +229,7 @@
 			"response": []
 		},
 		{
-			"name": "Proposer's mempool",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://proposer.testnet.polygon-nightfall.technology/mempool",
-					"protocol": "https",
-					"host": [
-						"proposer",
-						"testnet",
-						"polygon-nightfall",
-						"technology"
-					],
-					"path": [
-						"mempool"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Pending Tx",
+			"name": "Pending Transactions",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -322,7 +303,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/api/v1/proposer?limit=1&page=2&sortDirection=asc&sortColumn=goodBlocks",
+					"raw": "http://localhost:3000/api/v1/proposer?limit=2&page=1&sortDirection=asc&sortColumn=goodBlocks&address=0xCaE0ed659d7821b59bBFd1b6B79260051e5E9111,0xfeEDA3882Dd44aeb394caEEf941386E7ed88e0E0",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -336,11 +317,11 @@
 					"query": [
 						{
 							"key": "limit",
-							"value": "1"
+							"value": "2"
 						},
 						{
 							"key": "page",
-							"value": "2"
+							"value": "1"
 						},
 						{
 							"key": "sortDirection",
@@ -352,8 +333,7 @@
 						},
 						{
 							"key": "address",
-							"value": "0xBBB0ed659d7821b59bBFd1b6B79260051e5E9222",
-							"disabled": true
+							"value": "0xCaE0ed659d7821b59bBFd1b6B79260051e5E9111,0xfeEDA3882Dd44aeb394caEEf941386E7ed88e0E0"
 						}
 					]
 				}
@@ -421,6 +401,29 @@
 						"api",
 						"v1",
 						"contracts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transactions Count",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/transaction/stats/count",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"transaction",
+						"stats",
+						"count"
 					]
 				}
 			},
